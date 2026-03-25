@@ -1,0 +1,454 @@
+body{
+  background-color: snow;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+
+.header{
+  background-color: aliceblue;
+  overflow: hidden;
+  object-fit: cover;
+ width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 4px 0px 10px gray;
+  max-width: 1200px;
+  margin: auto;
+  padding: 30px 20px;
+ 
+  };
+  
+
+.header-buttom-line{
+  height: 5px;
+  width: 100%;
+  background-color: gainsboro;
+  margin-top: 5px;
+box-shadow: 0px 4px 10px dimgray;
+}
+
+
+.l-text{
+  font-size: 20px;
+  padding-left: 70px;
+   font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.span1{
+  display: inline-block;
+  background-image: url("text background.jpg");
+  background-size: cover;
+  background-position: center;
+  font-size: 50px;
+  font-weight: bold;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+}
+
+
+.span2{
+  color: darkorange;
+}
+
+
+.menu-btn div {
+  width: 35px;
+  height: 4px;
+  background: black;
+  margin: 6px 0;
+  transition: 0.5s;
+}
+
+.menu-btn {
+  cursor: pointer;
+  width: 30px;
+  margin-right: 35px;
+
+}
+
+.change .bar1{
+  transform: rotate(-45deg);
+  translate: (-7px,6px);
+}
+
+.change .bar2{
+  opacity: 0;
+}
+
+.change .bar3{
+  transform: rotate(45deg);
+  translate: (-7px,-6px);
+}
+
+
+.sidebar {
+  position: fixed;
+  left: -250px;
+  top: 130px;
+  width: 250px;
+  height: 50%;
+  padding-top: 60px;
+  transition: 0.3s;
+  overflow: hidden;
+  background-color: white;
+  
+}
+
+
+.sidebar a, h1 {
+  display: block;
+  padding: 5px;
+  text-decoration: none;
+  color: black;
+  text-align: center;
+}
+.sidebar a:hover{
+  color: #00bfff;
+}
+
+
+.sidebar.active{
+  left: 0;
+}
+
+
+.logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 90%;
+  position: fixed;
+  overflow: hidden;
+  font-size: 18px;
+  
+}
+
+.logo img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.search-icon{
+  width: 30px;
+height: 30px;
+border-radius: 90%;
+position: space-between;
+overflow: hidden;
+font-size: 18px;
+margin-left: 10px;
+padding: 20px;
+}
+.search-icon img{
+  width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+
+/*first image start here */
+.ebooks{
+  position: relative;
+   overflow: hidden;
+ max-width: 1200px;
+  margin: auto;
+}
+.ebooks img{
+  height: auto;
+  width: 100%;
+  object-fit: cover;
+  max-width: 100%;
+}
+
+.ebooks h1{
+  position:absolute;
+  top: 10px;
+  width: 180px;
+  left:10px;
+  color: darkorange;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.ebooks .ebooks-btn{
+  position:absolute;
+  top:10px;
+  right: 10px;
+  padding: 20px;
+  background-color: orange;
+  border-radius: 10px;
+  font-weight: bold;
+}
+/*first image end here */
+
+
+p{
+  text-align: center;
+}
+
+
+/*second image start here */
+.articles{
+  
+  position: relative;
+overflow: hidden;
+max-width: 1200px;
+margin: auto;
+  
+}
+.articles img{
+  height: auto;
+width: 100%;
+object-fit: cover;
+max-width: 100%;
+  
+}
+
+.articles h1{
+  position:absolute;
+  top: 10px;
+  width: 180px;
+  left:10px;
+  color: darkorange;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.articles .articles-btn{
+  position:absolute;
+  top:10px;
+  right: 10px;
+  padding: 20px;
+  background-color: orange;
+  border-radius: 10px;
+  font-weight: bold;
+}
+/*second image ends here */
+
+
+
+/* third image starts here */
+.blogs{
+ position: relative;
+overflow: hidden;
+max-width: 1200px;
+margin: auto;
+
+}
+.blogs img{
+  height: auto;
+width: 100%;
+object-fit: cover;
+max-width: 100%;
+  
+}
+
+.blogs h1{
+  position:absolute;
+  top: 10px;
+  width: 180px;
+  left:10px;
+  color: darkorange;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.blogs .blogs-btn{
+  position:absolute;
+  top:10px;
+  right: 10px;
+  padding: 20px;
+  background-color: orange;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/*inspiration image1 starts here */
+
+.inspiration1{
+  position: relative;
+overflow: hidden;
+max-width: 1200px;
+margin: auto;
+  
+}
+
+.inspiration1 img {
+  height: auto;
+width: 100%;
+object-fit: cover;
+max-width: 100%;
+  }
+/*inspiration image1 ends here */
+
+/*inspiration image2 starts here */
+.inspiration2 {
+  position: relative;
+overflow: hidden;
+max-width: 1200px;
+margin: auto;
+  
+}
+
+.inspiration2 img {
+  height: auto;
+width: 100%;
+object-fit: cover;
+max-width: 100%;
+}
+/*inspiration image2 ends here */
+
+
+/*inspiration image3 starts here */
+.inspiration3 {
+  position: relative;
+overflow: hidden;
+max-width: 1200px;
+margin: auto;
+  
+  
+}
+
+.inspiration3 img {
+    height: auto;
+  width: 100%;
+  object-fit: cover;
+  max-width: 100%;
+}
+
+/*inspiration image3 ends here */
+
+/*inspiration image4 starts here */
+.inspiration4 {
+ position: relative;
+overflow: hidden;
+max-width: 1200px;
+margin: auto;
+  
+  
+}
+
+.inspiration4 img {
+    height: auto;
+  width: 100%;
+  object-fit: cover;
+  max-width: 100%;
+}
+/*inspiration image4 ends here */
+
+.footer {
+
+  background: #111;
+  color: white;
+  padding: 40px 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.h31{
+  text-align: center;
+}
+
+.footer-section {
+  width: 220px;
+  margin-bottom: 20px;
+}
+
+.footer-section h3 {
+  margin-bottom: 10px;
+  color: orange;
+}
+
+.footer-section a {
+  display: block;
+  color: #ccc;
+  text-decoration: none;
+  margin: 5px 0;
+}
+
+.footer-section a:hover {
+  color: white;
+}
+
+.footer-bottom {
+  text-align: center;
+  border-top: 1px solid #444;
+  margin-top: 20px;
+  padding-top: 10px;
+  font-size: 14px;
+}
+
+.footer-image {
+  
+  right: 20px;
+  bottom: 70px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.footer-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+}
+
+.Quick-search{
+  color: orange;
+}
+
+/*featured post start here */
+.search-box{
+  width: 90%;
+  margin: auto;
+  text-align: center;
+}
+
+#searchInput{
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+#results{
+  margin-top: 10px;
+  text-align: left;
+}
+.result-item{
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+.result-item a{
+  text-decoration: none;
+  color: orange;
+  font-weight: bold;
+  
+}
+.result-item:hover{
+  background: #f5f5f5;
+}
+
+/*featured post ends here */
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+
+}
+
