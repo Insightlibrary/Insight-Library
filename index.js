@@ -404,13 +404,3 @@ console.log("Server running on port "+PORT)
 
 })
 
-let menubtn = document.getElementById("menu-btn");
-
-let sidebar = document.getElementById("sidebar");
-
-function toggle(x) {
-  sidebar.classList.toggle("active");
-  x.classList.toggle("change");
-
-}
-
