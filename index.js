@@ -11,8 +11,6 @@ const multer = require("multer")
 const rateLimit = require("express-rate-limit")
 const Post = require("./models/Post");
 
-
-
 const app = express()
 
 /* ---------------- GLOBAL MIDDLEWARE ---------------- */
@@ -92,7 +90,10 @@ default:Date.now
 
 const User = mongoose.model("User",userSchema)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8fd0234527e5cc5dfd0aae88ac5e40e9d0dba1fb
 /* post collection*/
 
 
@@ -104,6 +105,7 @@ const postSchema = new mongoose.Schema({
     default: false
   }
 });
+
 
 
 /* ---------------- LOGGER MIDDLEWARE ---------------- */
@@ -420,5 +422,4 @@ app.listen(PORT,()=>{
 console.log("Server running on port "+PORT)
 
 })
-
 
