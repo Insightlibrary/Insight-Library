@@ -9,7 +9,6 @@ const jwt = require("jsonwebtoken")
 const morgan = require("morgan")
 const multer = require("multer")
 const rateLimit = require("express-rate-limit")
-const Post = require("./models/Post");
 
 const app = express()
 
@@ -90,18 +89,55 @@ default:Date.now
 
 const User = mongoose.model("User",userSchema)
 
+// ✅ IMPORT MODEL
+const Post = require("./models/Post");
 
-/* post collection*/
+// ✅ TEST ROUTE (CHECK SERVER)
+app.get("/", (req, res) => {
+  res.send("API is working");
+});
 
 
-const postSchema = new mongoose.Schema({
-  title: String,
-  link: String,
-  isFeatured: {
-    type: Boolean,
-    default: false
+// 🔥 CREATE POST ROUTE (THIS IS WHAT YOU NEED)
+app.post("/add-post", async (req, res) => {
+  try {
+    const { title, link, isFeatured } = req.body;
+
+    const newPost = new Post({
+      title,
+      link,
+      isFeatured
+    });
+
+    await newPost.save();
+
+    res.json({
+      message: "Post created successfully",
+      data: newPost
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
+
+
+// 🔍 SEARCH ROUTE (FOR YOUR FRONTEND)
+app.get("/search", async (req, res) => {
+  try {
+    const query = req.query.q || "";
+
+    const results = await Post.find({
+      title: { $regex: query, $options: "i" }
+    });
+
+    res.json(results);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 
 
