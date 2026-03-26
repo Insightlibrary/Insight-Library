@@ -9,6 +9,8 @@ const jwt = require("jsonwebtoken")
 const morgan = require("morgan")
 const multer = require("multer")
 const rateLimit = require("express-rate-limit")
+const Post = require("./models/Post");
+
 
 const app = express()
 
@@ -103,28 +105,6 @@ const postSchema = new mongoose.Schema({
 
 module.exports = mongoose.model("Post", postSchema);
 
-/* creating data very important*/
-
-const Post = require("./models/Post");
-
-app.post("/add-post", async (req, res) => {
-  try {
-    const { title, link, isFeatured } = req.body;
-    
-    const newPost = new Post({
-      title,
-      link,
-      isFeatured
-    });
-    
-    await newPost.save();
-    
-    res.json(newPost);
-    
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 
 
