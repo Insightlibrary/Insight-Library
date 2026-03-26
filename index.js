@@ -89,6 +89,45 @@ default:Date.now
 
 const User = mongoose.model("User",userSchema)
 
+/* post collection*/
+
+
+const postSchema = new mongoose.Schema({
+  title: String,
+  link: String,
+  isFeatured: {
+    type: Boolean,
+    default: false
+  }
+});
+
+module.exports = mongoose.model("Post", postSchema);
+
+/* creating data very important*/
+
+const Post = require("./models/Post");
+
+app.post("/add-post", async (req, res) => {
+  try {
+    const { title, link, isFeatured } = req.body;
+    
+    const newPost = new Post({
+      title,
+      link,
+      isFeatured
+    });
+    
+    await newPost.save();
+    
+    res.json(newPost);
+    
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
 /* ---------------- LOGGER MIDDLEWARE ---------------- */
 
 function logger(req,res,next){
