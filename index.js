@@ -101,6 +101,7 @@ app.get("/", (req, res) => {
 // 🔥 CREATE POST ROUTE (THIS IS WHAT YOU NEED)
 app.post("/add-post", async (req, res) => {
   try {
+    console.log("BODY:", req.body); // 👈 shows what you sent
     const { title, link, isFeatured } = req.body;
 
     const newPost = new Post({
@@ -117,6 +118,7 @@ app.post("/add-post", async (req, res) => {
     });
 
   } catch (err) {
+    console.log("REAL ERROR:", err); // 👈 THIS IS WHAT WE NEED
     res.status(500).json({ error: err.message });
   }
 });
