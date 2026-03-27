@@ -20,7 +20,7 @@ searchInput.addEventListener("input", async () => {
     return;
   }
 
-  const res = await fetch(`http://localhost:5000/search?q=${query}`);
+  const res = await fetch(`https://insight-library.onrender.com/search?q=${query}`);
   const data = await res.json();
 
   resultsDiv.innerHTML = data.map(post => `
