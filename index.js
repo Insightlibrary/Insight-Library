@@ -142,7 +142,7 @@ app.get("/search", async (req, res) => {
   }
 });
 
-
+//test API
 app.get("/test-db", async (req, res) => {
   try {
     const posts = await Post.find();
@@ -152,7 +152,18 @@ app.get("/test-db", async (req, res) => {
   }
 });
 
+//delete route for front end
+app.delete("/posts/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
 
+    await Post.findByIdAndDelete(id);
+
+    res.json({ message: "Post deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 /* ---------------- LOGGER MIDDLEWARE ---------------- */
