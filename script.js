@@ -7,8 +7,34 @@ function toggle(x) {
   x.classList.toggle("change");
 
 }
+//api search start here 
 
-/*featured post start here */
+const searchInput = document.getElementById("searchInput");
+const resultsDiv = document.getElementById("results");
+
+searchInput.addEventListener("input", async () => {
+  const query = searchInput.value;
+
+  if (query.length < 2) {
+    resultsDiv.innerHTML = "";
+    return;
+  }
+
+  const res = await fetch(`http://localhost:5000/search?q=${query}`);
+  const data = await res.json();
+
+  resultsDiv.innerHTML = data.map(post => `
+    <div class="result-item">
+      <a href="${post.link}" target="_blank">
+        ${post.title}
+      </a>
+    </div>
+  `).join("");
+});
+//api search ends here 
+
+
+/*featured post start here 
 
 const posts = [
   {title:"Artificial Intelligence", link:""},
