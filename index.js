@@ -28,7 +28,7 @@ app.use(limiter)
 /* DATABASE CONNECTION */
 
 mongoose.connect(process.env.MONGO_URI, {
- serverSelectionTimeoutMS: 30000 // Wait up to 30s before timing out
+ serverSelectionTimeoutMS: 1000 // Wait up to 30s before timing out
 })
 .then(() => {
   console.log("MongoDB connected")
