@@ -2,7 +2,7 @@
   box-sizing: border-box;
 }
 * {
-  transition: all 0.3s ease;
+  transition: 0.3s ease;
 }
 
 html, body {
@@ -19,8 +19,8 @@ html, body {
 body{
   background: papayawhip; /* soft clean color */
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 14px;
+
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -29,18 +29,17 @@ body{
 
 
  
-.header{
+.headercontainer{
+  display: flex;
+  justify-items: space-between;
   background-color: aliceblue;
   overflow: hidden;
   object-fit: cover;
  width: 100%;
- position: relative;
-  display: flex;
-  justify-content: space-between;
+  position: relative;
   align-items: center;
   box-shadow: 4px 0px 10px gray;
   max-width: 1200px;
-  margin: auto;
   padding: 30px 20px;
   }
   
@@ -76,7 +75,7 @@ box-shadow: 0px 4px 10px dimgray;
   background-image: url("text background.jpg");
   background-size: cover;
   background-position: center;
-  font-size: 50px;
+  font-size: 30px;
   font-weight: bold;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -91,8 +90,8 @@ box-shadow: 0px 4px 10px dimgray;
 
 
 .menu-btn div {
-  width: 35px;
-  height: 4px;
+  width: 25px;
+  height: 2px;
   background: black;
   margin: 6px 0;
   transition: 0.5s;
@@ -101,8 +100,8 @@ box-shadow: 0px 4px 10px dimgray;
 
 .menu-btn {
   cursor: pointer;
-  width: 30px;
-  margin-right: 10px;
+  width: 20px;
+  margin-right: px;
 }
 
 
@@ -162,8 +161,8 @@ box-shadow: 0px 4px 10px dimgray;
 
 
 .logo {
-  width: 55px;
-  height: 55px;
+  width: 50px;
+  height: 50px;
   border-radius: 100%;
   position: absolute;
   overflow: hidden;
@@ -183,15 +182,15 @@ box-shadow: 0px 4px 10px dimgray;
 
 
 .search-icon{
-  width: 30px;
-height: 30px;
+  width: 25px;
+height: 25px;
 border-radius: 100%;
 position: space-between;
 overflow: hidden;
-margin-left: 10px;
+margin-left: 20px;
+margin-right: 16px;
+
 }
-
-
 
 .search-icon img{
   width: 100%;
@@ -199,56 +198,22 @@ height: 100%;
 object-fit: cover;
 }
 
-
-
-/*first image start here */
-.ebooks{
-  position: relative;
-   overflow: hidden;
- max-width: 1200px;
-  margin: auto;
-}
-
-
-
-.ebooks img{
-  height: auto;
+.bodycontainer{
   width: 100%;
-  object-fit: cover;
-  max-width: 100%;
-  border-radius: 10px;
+  background-color: lightgray;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
-
-
-.ebooks img:hover {
-  transform: scale(1.02);
-  transition: 0.3s;
-}
-
-
-.ebooks h1{
-  position:absolute;
-  top: 10px;
-  width: 180px;
-  left:10px;
-  color: darkorange;
-  font-size: 15px;
-  font-weight: 900;
-  text-align: center;
+.main{
+  height: 100px;
+  width: 100px;
+  background-color: brown;
 }
 
 
 
-.ebooks .ebooks-btn{
-  position:absolute;
-  top:10px;
-  right: 10px;
-  padding: 20px;
-  background-color: orange;
-  border-radius: 10px;
-  font-weight: bold;
-}
-/*first image end here */
 
 
 
@@ -260,205 +225,6 @@ p{
   -webkit-text-fill-color: transparent;
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
 }
-
-
-/*second image start here */
-.articles{
-position: relative;
-overflow: hidden;
-max-width: 1200px;
-margin: auto;
-}
-
-
-.articles img{
-  height: auto;
-width: 100%;
-object-fit: cover;
-max-width: 100%;
-border-radius: 10px;
-}
-
-
-.articles img:hover {
-  transform: scale(1.02);
-  transition: 0.3s;
-}
-
-
-.articles h1{
-  position:absolute;
-  top: 10px;
-  width: 180px;
-  left:10px;
-  color: darkorange;
-  font-size: 18px;
-  font-weight: 900;
-  text-align: center;
-}
-
-
-.articles .articles-btn{
-  position:absolute;
-  top:10px;
-  right: 10px;
-  padding: 20px;
-  background-color: orange;
-  border-radius: 10px;
-  font-weight: bold;
-}
-/*second image ends here */
-
-
-
-/* third image starts here */
-.blogs{
- position: relative;
-overflow: hidden;
-max-width: 1200px;
-margin: auto;
-}
-
-
-.blogs img{
-  height: auto;
-width: 100%;
-object-fit: cover;
-max-width: 100%;
-  border-radius: 10px;
-}
-
-
-.blogs img:hover {
-  transform: scale(1.02);
-  transition: 0.3s;
-}
-
-
-
-.blogs h1{
-  position:absolute;
-  top: 10px;
-  width: 180px;
-  left:10px;
-  color: darkorange;
-  font-size: 18px;
-  font-weight: 900;
-  text-align: center;
-}
-
-
-.blogs .blogs-btn{
-  position:absolute;
-  top:10px;
-  right: 10px;
-  padding: 20px;
-  background-color: orange;
-  border-radius: 10px;
-  font-weight: bold;
-}
-
-
-
-/*inspiration image1 starts here */
-
-.inspiration1{
-  position: relative;
-overflow: hidden;
-max-width: 1200px;
-margin: auto;
-}
-
-
-.inspiration1 img {
-height: auto;
-width: 100%;
-object-fit: cover;
-max-width: 100%;
- border-radius: 10px;
-  }
-  
-  
-  .inspiration1 img:hover {
-  transform: scale(1.02);
-  transition: 0.3s;
-}
-/*inspiration image1 ends here */
-
-
-/*inspiration image2 starts here */
-.inspiration2 {
-  position: relative;
-overflow: hidden;
-max-width: 1200px;
-margin: auto;
-}
-
-
-.inspiration2 img {
-  height: auto;
-width: 100%;
-object-fit: cover;
-max-width: 100%;
-border-radius: 10px;
-}
-
-
-.inspiration2 img:hover {
-  transform: scale(1.02);
-  transition: 0.3s;
-}
-/*inspiration image2 ends here */
-
-
-/*inspiration image3 starts here */
-.inspiration3 {
-  position: relative;
-overflow: hidden;
-max-width: 1200px;
-margin: auto;
-}
-
-
-.inspiration3 img {
-    height: auto;
-  width: 100%;
-  object-fit: cover;
-  max-width: 100%;
-  border-radius: 10px;
-}
-
-
-.inspiration3 img:hover {
-  transform: scale(1.02);
-  transition: 0.3s;
-}
-/*inspiration image3 ends here */
-
-
-/*inspiration image4 starts here */
-.inspiration4 {
- position: relative;
-overflow: hidden;
-max-width: 1200px;
-margin: auto;
-}
-
-
-.inspiration4 img {
-    height: auto;
-  width: 100%;
-  object-fit: cover;
-  max-width: 100%;
-  border-radius: 10px;
-}
-
-
-.inspiration4 img:hover {
-  transform: scale(1.02);
-  transition: 0.3s;
-}
-/*inspiration image4 ends here */
 
 
 .footer {
