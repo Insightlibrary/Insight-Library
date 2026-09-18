@@ -2,6 +2,7 @@
 require("dotenv").config()
 
 const express = require("express")
+const paymentRoutes = require("./routes/paymentRoutes");
 const mongoose = require("mongoose")
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
@@ -14,11 +15,20 @@ const app = express()
 
 /* ---------------- GLOBAL MIDDLEWARE ---------------- */
 
+console.log(
+  process.env.PAYSTACK_SECRET_KEY
+    ? "Paystack secret key detected"
+    : "Paystack secret key NOT detected"
+);
+
+
 app.use(cors())
 app.use(express.json())
+app.use("/api/payments", paymentRoutes);
 app.use(morgan("dev"))
 
 const limiter = rateLimit({
+
 windowMs: 15 * 60 * 1000,
 max: 100
 })
