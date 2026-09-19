@@ -1,23 +1,38 @@
 const express = require("express");
 const axios = require("axios");
+const Content = require("../models/Content");
 
 const router = express.Router();
 
 router.post("/initialize", async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, contentId } = req.body;
 
-    if (!email) {
+    // Check required information
+    if (!email || !contentId) {
       return res.status(400).json({
-        message: "Email is required"
+        message: "Email and contentId are required"
       });
     }
 
+    // Find the selected content in MongoDB
+    const content = await Content.findById(contentId);
+
+    if (!content) {
+      return res.status(404).json({
+        message: "Content not found"
+      });
+    }
+
+    // Convert naira to kobo for Paystack
+    const amountInKobo = content.price * 100;
+
+    // Initialize Paystack payment
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
       {
         email: email,
-        amount: 100000
+        amount: amountInKobo
       },
       {
         headers: {
@@ -27,7 +42,15 @@ router.post("/initialize", async (req, res) => {
       }
     );
 
-    res.json(response.data);
+    res.json({
+      message: "Payment initialized successfully",
+      content: {
+        id: content._id,
+        title: content.title,
+        price: content.price
+      },
+      payment: response.data
+    });
 
   } catch (error) {
     console.error(error.response?.data || error.message);

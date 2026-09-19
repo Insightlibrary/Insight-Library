@@ -3,6 +3,7 @@ require("dotenv").config()
 
 const express = require("express")
 const paymentRoutes = require("./routes/paymentRoutes");
+const contentRoutes = require("./routes/contentRoutes");
 const mongoose = require("mongoose")
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
@@ -25,6 +26,7 @@ console.log(
 app.use(cors())
 app.use(express.json())
 app.use("/api/payments", paymentRoutes);
+app.use("/api/contents", contentRoutes);
 app.use(morgan("dev"))
 
 const limiter = rateLimit({
@@ -38,7 +40,7 @@ app.use(limiter)
 /* DATABASE CONNECTION */
 
 mongoose.connect(process.env.MONGO_URI, {
- serverSelectionTimeoutMS: 1000 // Wait up to 30s before timing out
+ serverSelectionTimeoutMS: 10000 // Wait up to 30s before timing out
 })
 .then(() => {
   console.log("MongoDB connected")
