@@ -55,6 +55,18 @@ if (!user) {
       }
     );
 
+// Save the purchase as pending
+const purchase = new Purchase({
+  userId: userId,
+  contentId: content._id,
+  amount: content.price,
+  paystackReference: response.data.data.reference,
+  status: "pending"
+});
+
+await purchase.save();
+
+
     res.json({
       message: "Payment initialized successfully",
       content: {
