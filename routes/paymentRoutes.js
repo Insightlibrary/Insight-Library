@@ -110,6 +110,17 @@ router.get("/verify/:reference", auth, async (req, res) => {
 
     const transaction = response.data.data;
 
+// Find the purchase in MongoDB
+const purchase = await Purchase.findOne({
+  paystackReference: reference,
+  userId: req.user.id
+});
+
+if (!purchase) {
+  return res.status(404).json({
+    message: "Purchase not found"
+  });
+}
     // Check whether the payment was successful
     if (transaction.status !== "success") {
       return res.status(400).json({
