@@ -129,6 +129,20 @@ if (!purchase) {
       });
     }
 
+
+// Check that the amount paid matches the purchase amount
+if (transaction.amount !== purchase.amount * 100) {
+  return res.status(400).json({
+    message: "Payment amount does not match"
+  });
+}
+// Mark the purchase as successful
+purchase.status = "successful";
+purchase.paidAt = new Date();
+
+await purchase.save();
+
+
     res.json({
       message: "Payment verified successfully",
       reference: transaction.reference,
