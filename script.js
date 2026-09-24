@@ -31,6 +31,26 @@ searchInput.addEventListener("input", async () => {
     </div>
   `).join("");
 });
+
+// LOAD CONTENT FROM BACKEND
+
+async function loadContents() {
+  try {
+    const response = await fetch(
+      "https://insight-library.onrender.com/api/contents"
+    );
+
+    const contents = await response.json();
+
+    console.log("Contents:", contents);
+
+  } catch (error) {
+    console.error("Failed to load contents:", error);
+  }
+}
+
+loadContents();
+
 //api search ends here 
 
 
