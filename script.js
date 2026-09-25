@@ -40,16 +40,88 @@ async function loadContents() {
       "https://insight-library.onrender.com/api/contents"
     );
 
+    if (!response.ok) {
+      throw new Error("Failed to load contents");
+    }
+
     const contents = await response.json();
 
-    console.log("Contents:", contents);
+    const contentList = document.getElementById("content-list");
+
+    contentList.innerHTML = contents.map(content => `
+      <div class="content-card">
+
+        <h2>${content.title}</h2>
+
+        <p>${content.description}</p>
+
+        <p>
+          Price: ₦${content.price.toLocaleString()}
+        </p>
+
+        <button onclick="buyContent('${content._id}')">
+          Buy Now
+        </button>
+
+      </div>
+    `).join("");
 
   } catch (error) {
-    console.error("Failed to load contents:", error);
+    console.error(error);
+
+    const contentList = document.getElementById("content-list");
+
+    contentList.innerHTML =
+      "<p>Unable to load contents.</p>";
   }
 }
 
 loadContents();
+
+// BUY CONTENT
+
+async function buyContent(contentId) {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please login before buying content.");
+      return;
+    }
+
+    const response = await fetch(
+      "https://insight-library.onrender.com/api/payments/initialize",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+
+        body: JSON.stringify({
+          contentId: contentId
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message || "Payment could not be initialized.");
+      return;
+    }
+
+    // Send customer to Paystack Checkout
+    window.location.href =
+      data.payment.data.authorization_url;
+
+  } catch (error) {
+    console.error("Payment error:", error);
+
+    alert("Something went wrong while starting payment.");
+  }
+}
 
 //api search ends here 
 
