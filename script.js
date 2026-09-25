@@ -89,6 +89,7 @@ async function buyContent(contentId) {
   window.location.href = "login.html";
   return;
 }
+localStorage.setItem("pendingContentId", contentId);
 
     const response = await fetch(
       "https://insight-library.onrender.com/api/payments/initialize",

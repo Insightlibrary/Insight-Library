@@ -44,9 +44,10 @@ if (!contentId) {
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
       {
-        email: user.email,
-        amount: amountInKobo
-      },
+  email: user.email,
+  amount: amountInKobo,
+  callback_url: "https://insightlibrary.github.io/Insight-Library/payment-success.html"
+},
       {
         headers: {
           Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
