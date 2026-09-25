@@ -188,11 +188,31 @@ router.get("/download/:contentId", auth, async (req, res) => {
       });
     }
 
-    // Send the PDF file
-    res.redirect(content.fileUrl);
+    // Fetch the protected file from its storage location
+    const fileResponse = await axios.get(content.fileUrl, {
+      responseType: "stream"
+    });
+
+    // Tell the browser that this is a PDF file
+    res.setHeader(
+      "Content-Type",
+      fileResponse.headers["content-type"] || "application/pdf"
+    );
+
+    // Tell the browser to download the file
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${content.title}.pdf"`
+    );
+
+    // Send the file to the user
+    fileResponse.data.pipe(res);
 
   } catch (error) {
-    console.error(error);
+    console.error(
+      "Download error:",
+      error.response?.data || error.message
+    );
 
     res.status(500).json({
       message: "Download failed"
