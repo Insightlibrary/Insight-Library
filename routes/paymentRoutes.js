@@ -21,12 +21,12 @@ if (!user) {
     message: "User not found"
   });
 }
-    // Check required information
-    if (!email || !contentId) {
-      return res.status(400).json({
-        message: "Email and contentId are required"
-      });
-    }
+  // Check required information
+if (!contentId) {
+  return res.status(400).json({
+    message: "ContentId is required"
+  });
+}
 
     // Find the selected content in MongoDB
     const content = await Content.findById(contentId);
