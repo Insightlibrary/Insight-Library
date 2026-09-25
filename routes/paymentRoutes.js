@@ -158,4 +158,44 @@ await purchase.save();
     });
   }
 });
+
+// PROTECTED CONTENT DOWNLOAD
+router.get("/download/:contentId", auth, async (req, res) => {
+  try {
+    const { contentId } = req.params;
+
+    // Find a successful purchase belonging to this user
+    const purchase = await Purchase.findOne({
+      userId: req.user.id,
+      contentId: contentId,
+      status: "successful"
+    });
+
+    // User has not successfully purchased this content
+    if (!purchase) {
+      return res.status(403).json({
+        message: "You have not purchased this content"
+      });
+    }
+
+    // Find the content
+    const content = await Content.findById(contentId);
+
+    if (!content) {
+      return res.status(404).json({
+        message: "Content not found"
+      });
+    }
+
+    // Send the PDF file
+    res.redirect(content.fileUrl);
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Download failed"
+    });
+  }
+});
 module.exports = router;
