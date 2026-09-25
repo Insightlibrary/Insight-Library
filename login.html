@@ -180,17 +180,31 @@
       );
 
 
-      message.textContent =
-        "Login successful!";
+    message.textContent =
+  "Login successful!";
 
 
-      // Take customer back to the main page
-      setTimeout(() => {
+setTimeout(() => {
 
-        window.location.href = "index.html";
+  const pendingContentId =
+    localStorage.getItem("pendingContentId");
 
-      }, 1000);
 
+  if (pendingContentId) {
+
+    localStorage.removeItem("pendingContentId");
+
+    window.location.href =
+      `index.html?buy=${pendingContentId}`;
+
+  } else {
+
+    window.location.href =
+      "index.html";
+
+  }
+
+}, 1000);
 
     } catch (error) {
 
