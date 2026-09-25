@@ -85,9 +85,9 @@ async function buyContent(contentId) {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      alert("Please login before buying content.");
-      return;
-    }
+  window.location.href = "login.html";
+  return;
+}
 
     const response = await fetch(
       "https://insight-library.onrender.com/api/payments/initialize",
