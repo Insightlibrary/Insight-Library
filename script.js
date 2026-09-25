@@ -85,6 +85,7 @@ async function buyContent(contentId) {
     const token = localStorage.getItem("token");
 
     if (!token) {
+  localStorage.setItem("pendingContentId", contentId);
   window.location.href = "login.html";
   return;
 }
