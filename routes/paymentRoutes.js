@@ -50,19 +50,20 @@ if (!user) {
     const amountInKobo = content.price * 100;
 
     // Initialize Paystack payment
-    const response = await axios.post(
-      "https://api.paystack.co/transaction/initialize",
-      {
-        email: user.email,
-        amount: amountInKobo
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
+const response = await axios.post(
+  "https://api.paystack.co/transaction/initialize",
+  {
+    email: user.email,
+    amount: amountInKobo,
+    callback_url: "https://insightlibrary.github.io/Insight-Library/payment-success.html"
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+      "Content-Type": "application/json"
+    }
+  }
+);
 
 // Save the purchase as pending
 const purchase = new Purchase({
