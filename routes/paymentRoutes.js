@@ -198,9 +198,11 @@ router.get("/download/:contentId", auth, async (req, res) => {
 
     // Create a command for the private Backblaze file
     const command = new GetObjectCommand({
-      Bucket: process.env.B2_BUCKET_NAME,
-      Key: content.fileUrl
-    });
+  Bucket: process.env.B2_BUCKET_NAME,
+  Key: content.fileUrl,
+  ResponseContentType: "application/pdf",
+  ResponseContentDisposition: 'attachment; filename="Insight-Library-content.pdf"'
+});
 
     // Create a temporary download URL
     const downloadUrl = await getSignedUrl(s3, command, {
