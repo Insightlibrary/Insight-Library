@@ -31,11 +31,11 @@ if (!user) {
   });
 }
     // Check required information
-    if (!email || !contentId) {
-      return res.status(400).json({
-        message: "Email and contentId are required"
-      });
-    }
+    if (!contentId) {
+  return res.status(400).json({
+    message: "contentId is required"
+  });
+}
 
     // Find the selected content in MongoDB
     const content = await Content.findById(contentId);
