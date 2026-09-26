@@ -1,6 +1,15 @@
 const express = require("express");
 const axios = require("axios");
 const mongoose = require("mongoose");
+const {
+  GetObjectCommand
+} = require("@aws-sdk/client-s3");
+
+const {
+  getSignedUrl
+} = require("@aws-sdk/s3-request-presigner");
+
+const s3 = require("../config/b2");
 const Content = require("../models/Content");
 const Purchase = require("../models/Purchase");
 const auth = require("../middleware/auth");
@@ -21,12 +30,12 @@ if (!user) {
     message: "User not found"
   });
 }
-  // Check required information
-if (!contentId) {
-  return res.status(400).json({
-    message: "ContentId is required"
-  });
-}
+    // Check required information
+    if (!email || !contentId) {
+      return res.status(400).json({
+        message: "Email and contentId are required"
+      });
+    }
 
     // Find the selected content in MongoDB
     const content = await Content.findById(contentId);
@@ -44,10 +53,9 @@ if (!contentId) {
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
       {
-  email: user.email,
-  amount: amountInKobo,
-  callback_url: "https://insightlibrary.github.io/Insight-Library/payment-success.html"
-},
+        email: user.email,
+        amount: amountInKobo
+      },
       {
         headers: {
           Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
@@ -165,14 +173,13 @@ router.get("/download/:contentId", auth, async (req, res) => {
   try {
     const { contentId } = req.params;
 
-    // Find a successful purchase belonging to this user
+    // Check that this user successfully purchased this content
     const purchase = await Purchase.findOne({
       userId: req.user.id,
       contentId: contentId,
       status: "successful"
     });
 
-    // User has not successfully purchased this content
     if (!purchase) {
       return res.status(403).json({
         message: "You have not purchased this content"
@@ -188,31 +195,24 @@ router.get("/download/:contentId", auth, async (req, res) => {
       });
     }
 
-    // Fetch the protected file from its storage location
-    const fileResponse = await axios.get(content.fileUrl, {
-      responseType: "stream"
+    // Create a command for the private Backblaze file
+    const command = new GetObjectCommand({
+      Bucket: process.env.B2_BUCKET_NAME,
+      Key: content.fileUrl
     });
 
-    // Tell the browser that this is a PDF file
-    res.setHeader(
-      "Content-Type",
-      fileResponse.headers["content-type"] || "application/pdf"
-    );
+    // Create a temporary download URL
+    const downloadUrl = await getSignedUrl(s3, command, {
+      expiresIn: 300
+    });
 
-    // Tell the browser to download the file
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${content.title}.pdf"`
-    );
-
-    // Send the file to the user
-    fileResponse.data.pipe(res);
+    res.json({
+      message: "Download link created",
+      downloadUrl
+    });
 
   } catch (error) {
-    console.error(
-      "Download error:",
-      error.response?.data || error.message
-    );
+    console.error("DOWNLOAD ERROR:", error);
 
     res.status(500).json({
       message: "Download failed"
