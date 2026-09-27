@@ -222,4 +222,23 @@ router.get("/download/:contentId", auth, async (req, res) => {
     });
   }
 });
+
+// GET USER'S SUCCESSFUL PURCHASES
+router.get("/my-purchases", auth, async (req, res) => {
+  try {
+    const purchases = await Purchase.find({
+      userId: req.user.id,
+      status: "successful"
+    }).select("contentId");
+
+    res.json(purchases);
+
+  } catch (error) {
+    console.error("MY PURCHASES ERROR:", error);
+
+    res.status(500).json({
+      message: "Failed to get purchases"
+    });
+  }
+});
 module.exports = router;
