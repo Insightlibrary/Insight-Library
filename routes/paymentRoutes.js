@@ -1,7 +1,6 @@
 const express = require("express");
 const axios = require("axios");
 const mongoose = require("mongoose");
-const { Readable } = require("stream");
 const {
   GetObjectCommand
 } = require("@aws-sdk/client-s3");
@@ -220,7 +219,7 @@ res.setHeader(
 );
 
 // Send the PDF to the user
-Readable.fromWeb(file.Body).pipe(res);
+file.Body.pipe(res);
 
   } catch (error) {
     console.error("DOWNLOAD ERROR:", error);

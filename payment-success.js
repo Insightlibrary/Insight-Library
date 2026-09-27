@@ -57,41 +57,63 @@ async function verifyPayment() {
 
     // Download when the user clicks the button
     downloadBtn.onclick = async function () {
-      try {
-        downloadBtn.disabled = true;
-        downloadBtn.textContent = "Preparing download...";
+  try {
+    downloadBtn.disabled = true;
+    downloadBtn.textContent = "Preparing download...";
 
-        const response = await fetch(
-          `https://insight-library.onrender.com/api/payments/download/${contentId}`,
-          {
-            method: "GET",
-            headers: {
-              "Authorization": `Bearer ${token}`
-            }
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || "Download failed.");
+    const response = await fetch(
+      `https://insight-library.onrender.com/api/payments/download/${contentId}`,
+      {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
         }
-
-        // Open the temporary Backblaze download link
-        window.location.href = data.downloadUrl;
-
-        downloadBtn.disabled = false;
-        downloadBtn.textContent = "Download Again";
-
-      } catch (error) {
-        console.error("Download error:", error);
-
-        alert(error.message || "Download failed.");
-
-        downloadBtn.disabled = false;
-        downloadBtn.textContent = "Download Content";
       }
-    };
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+
+      throw new Error(
+        data.message || "Download failed."
+      );
+    }
+
+    // Receive the PDF directly from the backend
+    const blob = await response.blob();
+
+    // Create a temporary URL for the PDF
+    const downloadUrl = URL.createObjectURL(blob);
+
+    // Create a temporary download link
+    const link = document.createElement("a");
+
+    link.href = downloadUrl;
+    link.download = "Insight-Library-content.pdf";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    // Remove temporary URL
+    URL.revokeObjectURL(downloadUrl);
+
+    downloadBtn.disabled = false;
+    downloadBtn.textContent = "Download Again";
+
+  } catch (error) {
+    console.error("Download error:", error);
+
+    alert(
+      error.message || "Download failed."
+    );
+
+    downloadBtn.disabled = false;
+    downloadBtn.textContent = "Download Content";
+  }
+};
 
   } catch (error) {
     console.error("Verification error:", error);
