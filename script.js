@@ -33,40 +33,90 @@ searchInput.addEventListener("input", async () => {
 });
 
 // LOAD CONTENT FROM BACKEND
-
 async function loadContents() {
   try {
-    const response = await fetch(
+    const token = localStorage.getItem("token");
+
+    // Get all available contents
+    const contentsResponse = await fetch(
       "https://insight-library.onrender.com/api/contents"
     );
 
-    if (!response.ok) {
+    if (!contentsResponse.ok) {
       throw new Error("Failed to load contents");
     }
 
-    const contents = await response.json();
+    const contents = await contentsResponse.json();
+
+    // Get user's successful purchases
+    let purchasedContentIds = [];
+
+    if (token) {
+      const purchasesResponse = await fetch(
+        "https://insight-library.onrender.com/api/payments/my-purchases",
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        }
+      );
+
+      if (purchasesResponse.ok) {
+        const purchases = await purchasesResponse.json();
+
+        purchasedContentIds = purchases.map(
+          purchase => purchase.contentId
+        );
+      }
+    }
 
     const contentList = document.getElementById("content-list");
 
-    contentList.innerHTML = contents.map(content => `
-      <div class="content-card">
+    contentList.innerHTML = contents.map(content => {
 
-        <h2>${content.title}</h2>
+      const alreadyPurchased =
+        purchasedContentIds.includes(content._id);
 
-        <p>${content.description}</p>
+      let button;
 
-        <p>
-          Price: ₦${content.price.toLocaleString()}
-        </p>
+      if (alreadyPurchased) {
 
-        <button onclick="buyContent('${content._id}')">
-          Buy Now
-        </button>
+        button = `
+          <button onclick="downloadContent('${content._id}')">
+            Download Content
+          </button>
+        `;
 
-      </div>
-    `).join("");
+      } else {
+
+        button = `
+          <button onclick="buyContent('${content._id}')">
+            Buy Now
+          </button>
+        `;
+
+      }
+
+      return `
+        <div class="content-card">
+
+          <h2>${content.title}</h2>
+
+          <p>${content.description}</p>
+
+          <p>
+            Price: ₦${content.price.toLocaleString()}
+          </p>
+
+          ${button}
+
+        </div>
+      `;
+
+    }).join("");
 
   } catch (error) {
+
     console.error(error);
 
     const contentList = document.getElementById("content-list");
@@ -122,6 +172,65 @@ localStorage.setItem("pendingContentId", contentId);
     console.error("Payment error:", error);
 
     alert("Something went wrong while starting payment.");
+  }
+}
+// DOWNLOAD PURCHASED CONTENT
+async function downloadContent(contentId) {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please log in again.");
+      window.location.href = "login.html";
+      return;
+    }
+
+    const response = await fetch(
+      `https://insight-library.onrender.com/api/payments/download/${contentId}`,
+      {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+
+      throw new Error(
+        data.message || "Download failed."
+      );
+    }
+
+    // Receive the PDF from the backend
+    const blob = await response.blob();
+
+    // Create a temporary URL for the PDF
+    const downloadUrl = URL.createObjectURL(blob);
+
+    // Create a temporary download link
+    const link = document.createElement("a");
+
+    link.href = downloadUrl;
+    link.download = "Insight-Library-content.pdf";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    // Remove the temporary URL
+    URL.revokeObjectURL(downloadUrl);
+
+  } catch (error) {
+
+    console.error("Download error:", error);
+
+    alert(
+      error.message || "Download failed."
+    );
   }
 }
 

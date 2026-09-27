@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const mongoose = require("mongoose");
+const { Readable } = require("stream");
 const {
   GetObjectCommand
 } = require("@aws-sdk/client-s3");
@@ -204,15 +205,22 @@ router.get("/download/:contentId", auth, async (req, res) => {
   ResponseContentDisposition: 'attachment; filename="Insight-Library-content.pdf"'
 });
 
-    // Create a temporary download URL
-    const downloadUrl = await getSignedUrl(s3, command, {
-      expiresIn: 300
-    });
+  // Get the PDF directly from Backblaze
+const file = await s3.send(command);
 
-    res.json({
-      message: "Download link created",
-      downloadUrl
-    });
+// Tell the browser this is a downloadable PDF
+res.setHeader(
+  "Content-Type",
+  "application/pdf"
+);
+
+res.setHeader(
+  "Content-Disposition",
+  'attachment; filename="Insight-Library-content.pdf"'
+);
+
+// Send the PDF to the user
+Readable.fromWeb(file.Body).pipe(res);
 
   } catch (error) {
     console.error("DOWNLOAD ERROR:", error);
