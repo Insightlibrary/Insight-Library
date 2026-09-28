@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-  <meta charset="UTF-8">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Login</title>
-
-  <style>
+<!DOCTYPE html><html lang="en"><head>  <meta charset="UTF-8">  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Login</title>  <style>
 
     body {
       font-family: Arial, sans-serif;
@@ -42,6 +31,30 @@
       box-sizing: border-box;
     }
 
+    /* Password field container */
+    .password-container {
+      position: relative;
+    }
+
+    /* Password input */
+    .password-container input {
+      padding-right: 45px;
+    }
+
+    /* Eye button */
+    .eye-button {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: none;
+      width: auto;
+      padding: 5px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
     button {
       width: 100%;
       padding: 12px;
@@ -53,78 +66,120 @@
       text-align: center;
     }
 
-  </style>
-
-</head>
+  </style></head><body>  <div class="login-container"><h1>Login</h1>
 
 
-<body>
+<form id="loginForm">
 
-  <div class="login-container">
+  <div class="form-group">
 
-    <h1>Login</h1>
+    <label for="email">
+      Email
+    </label>
 
-
-    <form id="loginForm">
-
-      <div class="form-group">
-
-        <label for="email">
-          Email
-        </label>
-
-        <input
-          type="email"
-          id="email"
-          required
-        >
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="password">
-          Password
-        </label>
-
-        <input
-          type="password"
-          id="password"
-          required
-        >
-
-      </div>
-
-
-      <button type="submit">
-        Login
-      </button>
-
-    </form>
-
-
-    <p id="message"></p>
-
-
-    <p>
-
-      Don't have an account?
-
-      <a href="register.html">
-        Create Account
-      </a>
-
-    </p>
+    <input
+      type="email"
+      id="email"
+      required
+    >
 
   </div>
 
 
-<script>
+  <div class="form-group">
+
+    <label for="password">
+      Password
+    </label>
+
+    <div class="password-container">
+
+      <input
+        type="password"
+        id="password"
+        required
+      >
+
+      <button
+        type="button"
+        class="eye-button"
+        id="togglePassword"
+        aria-label="Show password"
+      >
+        👁️
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <button type="submit">
+    Login
+  </button>
+
+</form>
+
+
+<p id="message"></p>
+
+
+<p>
+  <a href="forgot-password.html">
+    Forgot password?
+  </a>
+</p>
+<p>
+
+  Don't have an account?
+
+  <a href="register.html">
+    Create Account
+  </a>
+
+</p>
+
+  </div><script>
 
   const loginForm = document.getElementById("loginForm");
 
   const message = document.getElementById("message");
+
+  const passwordInput =
+    document.getElementById("password");
+
+  const togglePassword =
+    document.getElementById("togglePassword");
+
+
+  // Show or hide password
+  togglePassword.addEventListener("click", () => {
+
+    if (passwordInput.type === "password") {
+
+      passwordInput.type = "text";
+
+      togglePassword.textContent = "🙈";
+
+      togglePassword.setAttribute(
+        "aria-label",
+        "Hide password"
+      );
+
+    } else {
+
+      passwordInput.type = "password";
+
+      togglePassword.textContent = "👁️";
+
+      togglePassword.setAttribute(
+        "aria-label",
+        "Show password"
+      );
+
+    }
+
+  });
 
 
   loginForm.addEventListener("submit", async (event) => {
@@ -180,31 +235,31 @@
       );
 
 
-    message.textContent =
-  "Login successful!";
+      message.textContent =
+        "Login successful!";
 
 
-setTimeout(() => {
+      setTimeout(() => {
 
-  const pendingContentId =
-    localStorage.getItem("pendingContentId");
+        const pendingContentId =
+          localStorage.getItem("pendingContentId");
 
 
-  if (pendingContentId) {
+        if (pendingContentId) {
 
-    localStorage.removeItem("pendingContentId");
+          localStorage.removeItem("pendingContentId");
 
-    window.location.href =
-      `index.html?buy=${pendingContentId}`;
+          window.location.href =
+            `index.html?buy=${pendingContentId}`;
 
-  } else {
+        } else {
 
-    window.location.href =
-      "index.html";
+          window.location.href =
+            "index.html";
 
-  }
+        }
 
-}, 1000);
+      }, 1000);
 
     } catch (error) {
 
@@ -217,7 +272,4 @@ setTimeout(() => {
 
   });
 
-</script>
-</body>
-
-</html>
+</script></body></html>

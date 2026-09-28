@@ -12,6 +12,7 @@ const jwt = require("jsonwebtoken")
 const morgan = require("morgan")
 const multer = require("multer")
 const rateLimit = require("express-rate-limit")
+const PasswordReset = require("./models/PasswordReset");
 
 const app = express()
 
