@@ -1,5 +1,7 @@
 const express = require("express");
 const Content = require("../models/Content");
+const auth = require("../middleware/Auth");
+const admin = require("../middleware/Admin");
 
 const router = express.Router();
 
@@ -42,7 +44,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // CREATE new content
-router.post("/", async (req, res) => {
+router.post("/", auth, admin, async (req, res) => {
   try {
     const { title, description, price, fileUrl } = req.body;
 
@@ -76,7 +78,7 @@ router.post("/", async (req, res) => {
 });
 
 // TEMPORARY: Update PDF filename
-router.patch("/:id/file", async (req, res) => {
+router.patch("/:id/file", auth, admin, async (req, res) => {
   try {
     const { fileUrl } = req.body;
 

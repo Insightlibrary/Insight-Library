@@ -4,6 +4,7 @@ require("dotenv").config()
 const express = require("express")
 const paymentRoutes = require("./routes/paymentRoutes");
 const contentRoutes = require("./routes/contentRoutes");
+const adminContentRoutes = require("./routes/adminContentRoutes");
 const mongoose = require("mongoose")
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
@@ -27,6 +28,7 @@ app.use(cors())
 app.use(express.json())
 app.use("/api/payments", paymentRoutes);
 app.use("/api/contents", contentRoutes);
+app.use("/api/admin/content", adminContentRoutes);
 app.use(morgan("dev"))
 
 const limiter = rateLimit({
