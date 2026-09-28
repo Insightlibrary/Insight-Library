@@ -13,6 +13,7 @@ const morgan = require("morgan")
 const multer = require("multer")
 const rateLimit = require("express-rate-limit")
 const PasswordReset = require("./models/PasswordReset");
+const transporter = require("./config/email");
 
 const app = express()
 
@@ -338,6 +339,194 @@ res.status(500).json({error:err.message})
 }
 
 })
+
+app.post("/api/v1/auth/forgot-password", async (req, res) => {
+
+  try {
+
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required"
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    // Don't reveal whether the email exists
+    if (!user) {
+      return res.json({
+        message: "If an account exists with that email, a reset link has been sent."
+      });
+    }
+
+    // Create a random reset token
+    const crypto = require("crypto");
+
+    const token = crypto.randomBytes(32).toString("hex");
+
+    // Token expires after 15 minutes
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+    // Remove any previous reset token for this user
+    await PasswordReset.deleteMany({
+      userId: user._id
+    });
+
+    // Save the new reset token
+    await PasswordReset.create({
+      userId: user._id,
+      token: token,
+      expiresAt: expiresAt
+    });
+
+    // Link the user will click in their email
+    const resetLink =
+      `https://insightlibrary.github.io/Insight-Library/reset-password.html?token=${token}`;
+
+    // Send the email
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: "Reset your Insight-Library password",
+
+      html: `
+        <h2>Password Reset</h2>
+
+        <p>Hello ${user.name || "there"},</p>
+
+        <p>
+          We received a request to reset your Insight-Library password.
+        </p>
+
+        <p>
+          Click the button below to create a new password:
+        </p>
+
+        <p>
+          <a href="${resetLink}"
+             style="
+               display:inline-block;
+               padding:12px 20px;
+               background:#007bff;
+               color:white;
+               text-decoration:none;
+               border-radius:5px;
+             ">
+            Reset Password
+          </a>
+        </p>
+
+        <p>
+          This link will expire in 15 minutes.
+        </p>
+
+        <p>
+          If you did not request this, you can ignore this email.
+        </p>
+      `
+    });
+
+    res.json({
+      message: "If an account exists with that email, a reset link has been sent."
+    });
+
+  } catch (error) {
+
+    console.error("Forgot password error:", error);
+
+    res.status(500).json({
+      message: "Something went wrong. Please try again later."
+    });
+
+  }
+
+});
+
+app.post("/api/v1/auth/reset-password", async (req, res) => {
+
+  try {
+
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({
+        message: "Token and new password are required"
+      });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters"
+      });
+    }
+
+    // Find the reset token
+    const resetRequest = await PasswordReset.findOne({
+      token: token
+    });
+
+    if (!resetRequest) {
+      return res.status(400).json({
+        message: "Invalid or expired reset link"
+      });
+    }
+
+    // Check whether the token has expired
+    if (resetRequest.expiresAt < new Date()) {
+
+      await PasswordReset.deleteOne({
+        _id: resetRequest._id
+      });
+
+      return res.status(400).json({
+        message: "Invalid or expired reset link"
+      });
+    }
+
+    // Find the user
+    const user = await User.findById(
+      resetRequest.userId
+    );
+
+    if (!user) {
+      return res.status(400).json({
+        message: "User not found"
+      });
+    }
+
+    // Hash the new password
+    const hash = await bcrypt.hash(
+      newPassword,
+      10
+    );
+
+    // Save the new password
+    user.password = hash;
+
+    await user.save();
+
+    // Delete the reset token so it cannot be used again
+    await PasswordReset.deleteOne({
+      _id: resetRequest._id
+    });
+
+    res.json({
+      message: "Password reset successfully"
+    });
+
+  } catch (error) {
+
+    console.error("Reset password error:", error);
+
+    res.status(500).json({
+      message: "Something went wrong. Please try again later."
+    });
+
+  }
+
+});
 
 /* ---------------- CREATE USER ---------------- */
 
