@@ -1,4 +1,4 @@
-const auth = require("./Auth");
+const auth = require("./auth");
 const admin = (req, res, next) => {
   if (req.user.role !== "admin"){
     return

@@ -51,9 +51,13 @@ router.post(
         });
       }
       //create a unique file key
-      const fileKey = `contents/${Date.now()}-$
-      {req.file.originalname}`;
-      
+const safeFileName = req.file.originalname
+  .replace(/[^\x20-\x7E]/g, "")
+  .replace(/\s+/g, "-");
+
+const fileKey =
+  `contents/${Date.now()}-${safeFileName}`;
+
       //Upload PDF to Backblaze B2
       const command = new PutObjectCommand({
         Bucket:
