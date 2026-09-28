@@ -16,6 +16,7 @@ const PasswordReset = require("./models/PasswordReset");
 const transporter = require("./config/email");
 
 const app = express()
+app.set("trust proxy", 1);
 
 /* ---------------- GLOBAL MIDDLEWARE ---------------- */
 
