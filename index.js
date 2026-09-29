@@ -695,8 +695,7 @@ app.get("/api/auth/google/callback", async (req, res) => {
 
     const { tokens } = await oauth2Client.getToken(code);
 
-    console.log("GOOGLE TOKENS RECEIVED:");
-    console.log(tokens);
+    console.log("Google OAuth authorization successful.");
 
     res.send("Google authorization successful. You can close this page.");
 
