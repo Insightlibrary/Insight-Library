@@ -14,6 +14,7 @@ const multer = require("multer")
 const rateLimit = require("express-rate-limit")
 const PasswordReset = require("./models/PasswordReset");
 const transporter = require("./config/email");
+const { google } = require("googleapis");
 
 const app = express()
 app.set("trust proxy", 1);
@@ -676,6 +677,39 @@ message:"Server error"
 
 })
 
+/*------GOOGLE OAUTH CALLBACK---------*/
+app.get("/api/auth/google/callback", async (req, res) => {
+
+  try {
+
+    const { code } = req.query;
+
+    if (!code) {
+      return res.status(400).send("Authorization code missing");
+    }
+
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      process.env.GOOGLE_REDIRECT_URI
+    );
+
+    const { tokens } = await oauth2Client.getToken(code);
+
+    console.log("GOOGLE TOKENS RECEIVED:");
+    console.log(tokens);
+
+    res.send("Google authorization successful. You can close this page.");
+
+  } catch (error) {
+
+    console.error("Google OAuth error:", error);
+
+    res.status(500).send("Google authorization failed");
+
+  }
+
+});
 /* ---------------- SERVER ---------------- */
 
 const PORT = process.env.PORT || 5000
