@@ -18,14 +18,15 @@ const gmail = google.gmail({
 async function sendGmail({ to, subject, html }) {
 
   const message = [
-    `From: ${process.env.EMAIL_USER}`,
-    `To: ${to}`,
-    `Subject: ${subject}`,
-    "MIME-Version: 1.0",
-    'Content-Type: text/html; charset="UTF-8"',
-    "",
-    html
-  ].join("\r\n");
+  `From: Insight-Library <${process.env.EMAIL_USER}>`,
+  `To: ${to}`,
+  `Subject: ${subject}`,
+  "MIME-Version: 1.0",
+  'Content-Type: text/html; charset="UTF-8"',
+  "X-Mailer: Insight-Library",
+  "",
+  html
+].join("\r\n");
 
   const encodedMessage = Buffer
     .from(message)
