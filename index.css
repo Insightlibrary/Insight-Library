@@ -206,6 +206,14 @@ object-fit: cover;
   flex-wrap: wrap;
   justify-content: center;
 }
+button{
+  background-color: green;
+  color: white;
+  border: none;
+  width: 90px;
+  height: 30px;
+  
+}
 
 
 
