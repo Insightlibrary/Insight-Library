@@ -14,6 +14,7 @@ const multer = require("multer")
 const rateLimit = require("express-rate-limit")
 const PasswordReset = require("./models/PasswordReset");
 const transporter = require("./config/email");
+const sendGmail = require("./config/gmail");
 const { google } = require("googleapis");
 
 const app = express()
@@ -388,48 +389,46 @@ app.post("/api/v1/auth/forgot-password", async (req, res) => {
       `https://insightlibrary.github.io/Insight-Library/reset-password.html?token=${token}`;
 
     // Send the email
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: user.email,
-      subject: "Reset your Insight-Library password",
+   await sendGmail({
+  to: user.email,
+  subject: "Reset your Insight-Library password",
 
-      html: `
-        <h2>Password Reset</h2>
+  html: `
+    <h2>Password Reset</h2>
 
-        <p>Hello ${user.name || "there"},</p>
+    <p>Hello ${user.name || "there"},</p>
 
-        <p>
-          We received a request to reset your Insight-Library password.
-        </p>
+    <p>
+      We received a request to reset your Insight-Library password.
+    </p>
 
-        <p>
-          Click the button below to create a new password:
-        </p>
+    <p>
+      Click the button below to create a new password:
+    </p>
 
-        <p>
-          <a href="${resetLink}"
-             style="
-               display:inline-block;
-               padding:12px 20px;
-               background:#007bff;
-               color:white;
-               text-decoration:none;
-               border-radius:5px;
-             ">
-            Reset Password
-          </a>
-        </p>
+    <p>
+      <a href="${resetLink}"
+         style="
+           display:inline-block;
+           padding:12px 20px;
+           background:#007bff;
+           color:white;
+           text-decoration:none;
+           border-radius:5px;
+         ">
+        Reset Password
+      </a>
+    </p>
 
-        <p>
-          This link will expire in 15 minutes.
-        </p>
+    <p>
+      This link will expire in 15 minutes.
+    </p>
 
-        <p>
-          If you did not request this, you can ignore this email.
-        </p>
-      `
-    });
-
+    <p>
+      If you did not request this, you can ignore this email.
+    </p>
+  `
+});
     res.json({
       message: "If an account exists with that email, a reset link has been sent."
     });
