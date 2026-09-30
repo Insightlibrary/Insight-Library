@@ -362,26 +362,79 @@ async function downloadContent(contentId) {
 
     if (!response.ok) {
 
-  const errorText = await response.text();
+      const errorText =
+        await response.text();
 
-  console.error(
-    "Download response:",
-    response.status,
-    errorText
-  );
+      console.error(
+        "Download response:",
+        response.status,
+        errorText
+      );
 
-  throw new Error(
-    `Download failed (${response.status}): ${errorText}`
-  );
+      throw new Error(
+        `Download failed (${response.status}): ${errorText}`
+      );
 
-}
+    }
 
+
+    // Check what the backend actually returned
+
+    const contentType =
+      response.headers.get("content-type");
+
+
+    // If the backend returned a PDF
+
+    if (
+      contentType &&
+      contentType.includes("application/pdf")
+    ) {
+
+      const blob =
+        await response.blob();
+
+
+      const downloadUrl =
+        URL.createObjectURL(blob);
+
+
+      const link =
+        document.createElement("a");
+
+
+      link.href =
+        downloadUrl;
+
+
+      link.download =
+        "Insight-Library-content.pdf";
+
+
+      document.body.appendChild(link);
+
+
+      link.click();
+
+
+      link.remove();
+
+
+      URL.revokeObjectURL(
+        downloadUrl
+      );
+
+
+      return;
+
+    }
+
+
+    // If the backend returned JSON
 
     const data =
       await response.json();
 
-
-    // Backend returns the secure B2 link
 
     if (!data.downloadUrl) {
 
@@ -392,7 +445,7 @@ async function downloadContent(contentId) {
     }
 
 
-    // Open the secure download link
+    // Open secure download link
 
     window.location.href =
       data.downloadUrl;
