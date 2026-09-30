@@ -362,16 +362,19 @@ async function downloadContent(contentId) {
 
     if (!response.ok) {
 
-      const data =
-        await response.json();
+  const errorText = await response.text();
 
+  console.error(
+    "Download response:",
+    response.status,
+    errorText
+  );
 
-      throw new Error(
-        data.message ||
-        "Download failed."
-      );
+  throw new Error(
+    `Download failed (${response.status}): ${errorText}`
+  );
 
-    }
+}
 
 
     const data =
