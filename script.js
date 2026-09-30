@@ -7,29 +7,110 @@ function toggle(x) {
   x.classList.toggle("change");
 
 }
-//api search start here 
+// ================================
+// SEARCH CONTENT
+// ================================
 
 const searchInput = document.getElementById("searchInput");
 const resultsDiv = document.getElementById("results");
 
-searchInput.addEventListener("input", async () => {
-  const query = searchInput.value;
+let allContents = [];
 
-  if (query.length < 2) {
-    resultsDiv.innerHTML = "";
-    return;
+
+// Load contents for search
+async function loadSearchContents() {
+
+  try {
+
+    const response = await fetch(
+      "https://insight-library.onrender.com/api/contents"
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to load contents");
+    }
+
+    allContents = await response.json();
+
+  } catch (error) {
+
+    console.error("Search content error:", error);
+
   }
 
-  const res = await fetch(`https://insight-library.onrender.com/search?q=${query}`);
-  const data = await res.json();
+}
 
-  resultsDiv.innerHTML = data.map(post => `
-    <div class="result-item">
-      <a href="${post.link}" target="_blank">
-        ${post.title}
-      </a>
-    </div>
-  `).join("");
+
+loadSearchContents();
+
+
+// Search when user types
+searchInput.addEventListener("input", () => {
+
+  const query = searchInput.value
+    .trim()
+    .toLowerCase();
+
+
+  // Clear results when search is empty
+  if (query.length === 0) {
+
+    resultsDiv.innerHTML = "";
+
+    return;
+
+  }
+
+
+  // Find matching contents
+  const matchingContents = allContents.filter(content => {
+
+    const title = content.title
+      ? content.title.toLowerCase()
+      : "";
+
+    const description = content.description
+      ? content.description.toLowerCase()
+      : "";
+
+
+    return (
+      title.includes(query) ||
+      description.includes(query)
+    );
+
+  });
+
+
+  // No results
+  if (matchingContents.length === 0) {
+
+    resultsDiv.innerHTML = `
+      <div class="result-item">
+        <p>No content found.</p>
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  // Display search results
+  resultsDiv.innerHTML = matchingContents.map(content => {
+
+    return `
+      <div class="result-item">
+
+        <a href="content.html?id=${content._id}">
+          ${content.title}
+        </a>
+
+      </div>
+    `;
+
+  }).join("");
+
 });
 
 // LOAD CONTENT FROM BACKEND
