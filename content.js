@@ -372,83 +372,56 @@ async function downloadContent(contentId) {
       );
 
       throw new Error(
-        `Download failed (${response.status}): ${errorText}`
+        `Download failed (${response.status})`
       );
 
     }
 
 
-    // Check what the backend actually returned
+    // Receive the PDF from the backend
 
-    const contentType =
-      response.headers.get("content-type");
-
-
-    // If the backend returned a PDF
-
-    if (
-      contentType &&
-      contentType.includes("application/pdf")
-    ) {
-
-      const blob =
-        await response.blob();
+    const blob =
+      await response.blob();
 
 
-      const downloadUrl =
-        URL.createObjectURL(blob);
+    // Create a temporary URL
+
+    const downloadUrl =
+      URL.createObjectURL(blob);
 
 
-      const link =
-        document.createElement("a");
+    // Create download link
+
+    const link =
+      document.createElement("a");
 
 
-      link.href =
-        downloadUrl;
+    link.href =
+      downloadUrl;
 
 
-      link.download =
-        "Insight-Library-content.pdf";
+    link.download =
+      "Insight-Library-content.pdf";
 
 
-      document.body.appendChild(link);
+    document.body.appendChild(link);
 
 
-      link.click();
+    link.click();
 
 
-      link.remove();
+    link.remove();
 
+
+    // Clean up temporary URL
+
+    setTimeout(() => {
 
       URL.revokeObjectURL(
         downloadUrl
       );
 
-
-      return;
-
-    }
-
-
-    // If the backend returned JSON
-
-    const data =
-      await response.json();
-
-
-    if (!data.downloadUrl) {
-
-      throw new Error(
-        "Download link was not received."
-      );
-
-    }
-
-
-    // Open secure download link
-
-    window.location.href =
-      data.downloadUrl;
+    }, 1000);
 
 
   } catch (error) {
