@@ -2,16 +2,21 @@
 // CONTENT PAGE
 // ================================
 
-const contentPage = document.getElementById("content-page");
+const contentPage =
+  document.getElementById("content-page");
 
 
-// Get content ID from the URL
+// ================================
+// GET CONTENT ID FROM URL
+// ================================
 
-const urlParams = new URLSearchParams(
-  window.location.search
-);
+const urlParams =
+  new URLSearchParams(
+    window.location.search
+  );
 
-const contentId = urlParams.get("id");
+const contentId =
+  urlParams.get("id");
 
 
 // Store the content loaded from MongoDB
@@ -26,6 +31,7 @@ let currentContent = null;
 if (!contentId) {
 
   contentPage.innerHTML = `
+
     <h1>Content not found</h1>
 
     <p>
@@ -35,6 +41,7 @@ if (!contentId) {
     <a href="index.html">
       Back to Home
     </a>
+
   `;
 
 } else {
@@ -59,21 +66,27 @@ async function loadContent() {
 
     if (!response.ok) {
 
-      throw new Error("Content not found");
+      throw new Error(
+        "Content not found"
+      );
 
     }
 
 
-    currentContent = await response.json();
+    currentContent =
+      await response.json();
 
 
-    // Check whether this user has purchased it
+    // Check whether this user
+    // has already purchased it
 
     const alreadyPurchased =
       await checkPurchase();
 
 
-    displayContent(alreadyPurchased);
+    displayContent(
+      alreadyPurchased
+    );
 
 
   } catch (error) {
@@ -86,7 +99,9 @@ async function loadContent() {
 
     contentPage.innerHTML = `
 
-      <h1>Unable to load content</h1>
+      <h1>
+        Unable to load content
+      </h1>
 
       <p>
         We could not find this content.
@@ -128,7 +143,8 @@ async function checkPurchase() {
       "https://insight-library.onrender.com/api/payments/my-purchases",
       {
         headers: {
-          "Authorization": `Bearer ${token}`
+          "Authorization":
+            `Bearer ${token}`
         }
       }
     );
@@ -147,7 +163,8 @@ async function checkPurchase() {
 
     return purchases.some(
       purchase =>
-        purchase.contentId === contentId
+        purchase.contentId ===
+        contentId
     );
 
 
@@ -170,10 +187,14 @@ async function checkPurchase() {
 // DISPLAY CONTENT
 // ================================
 
-function displayContent(alreadyPurchased) {
+function displayContent(
+  alreadyPurchased
+) {
 
   let button;
 
+
+  // User already purchased
 
   if (alreadyPurchased) {
 
@@ -187,7 +208,11 @@ function displayContent(alreadyPurchased) {
 
     `;
 
-  } else {
+  }
+
+  // User has not purchased
+
+  else {
 
     button = `
 
@@ -204,6 +229,11 @@ function displayContent(alreadyPurchased) {
 
   contentPage.innerHTML = `
 
+    <span class="content-label">
+      DIGITAL CONTENT
+    </span>
+
+
     <h1>
       ${currentContent.title}
     </h1>
@@ -215,10 +245,14 @@ function displayContent(alreadyPurchased) {
 
 
     <div class="content-price">
-
       ₦${currentContent.price.toLocaleString()}
-
     </div>
+
+
+    <p class="content-note">
+      Secure digital purchase •
+      Instant access after payment
+    </p>
 
 
     ${button}
@@ -232,7 +266,9 @@ function displayContent(alreadyPurchased) {
 // BUY CONTENT
 // ================================
 
-async function buyContent(contentId) {
+async function buyContent(
+  contentId
+) {
 
   try {
 
@@ -249,8 +285,10 @@ async function buyContent(contentId) {
         contentId
       );
 
+
       window.location.href =
         "login.html";
+
 
       return;
 
@@ -269,15 +307,22 @@ async function buyContent(contentId) {
         method: "POST",
 
         headers: {
-          "Content-Type": "application/json",
+
+          "Content-Type":
+            "application/json",
 
           "Authorization":
             `Bearer ${token}`
+
         },
 
         body: JSON.stringify({
-          contentId: contentId
+
+          contentId:
+            contentId
+
         })
+
       }
     );
 
@@ -292,6 +337,7 @@ async function buyContent(contentId) {
         data.message ||
         "Payment could not be initialized."
       );
+
 
       return;
 
@@ -325,7 +371,9 @@ async function buyContent(contentId) {
 // DOWNLOAD CONTENT
 // ================================
 
-async function downloadContent(contentId) {
+async function downloadContent(
+  contentId
+) {
 
   try {
 
@@ -339,8 +387,10 @@ async function downloadContent(contentId) {
         "Please log in again."
       );
 
+
       window.location.href =
         "login.html";
+
 
       return;
 
@@ -353,9 +403,12 @@ async function downloadContent(contentId) {
         method: "GET",
 
         headers: {
+
           "Authorization":
             `Bearer ${token}`
+
         }
+
       }
     );
 
@@ -365,11 +418,13 @@ async function downloadContent(contentId) {
       const errorText =
         await response.text();
 
+
       console.error(
         "Download response:",
         response.status,
         errorText
       );
+
 
       throw new Error(
         `Download failed (${response.status})`
@@ -378,13 +433,14 @@ async function downloadContent(contentId) {
     }
 
 
-    // Receive the PDF from the backend
+    // Receive the PDF
+    // from the backend
 
     const blob =
       await response.blob();
 
 
-    // Create a temporary URL
+    // Create temporary URL
 
     const downloadUrl =
       URL.createObjectURL(blob);
@@ -404,7 +460,9 @@ async function downloadContent(contentId) {
       "Insight-Library-content.pdf";
 
 
-    document.body.appendChild(link);
+    document.body.appendChild(
+      link
+    );
 
 
     link.click();
