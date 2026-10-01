@@ -5,6 +5,7 @@ const express = require("express")
 const paymentRoutes = require("./routes/paymentRoutes");
 const contentRoutes = require("./routes/contentRoutes");
 const adminContentRoutes = require("./routes/adminContentRoutes");
+const authMiddleware = require("./middleware/auth");
 const mongoose = require("mongoose")
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
@@ -345,7 +346,7 @@ res.status(500).json({error:err.message})
 
 /* ---------------- GET LOGGED-IN USER ---------------- */
 
-app.get("/api/v1/auth/me", auth, async (req, res) => {
+app.get("/api/v1/auth/me", authMiddleware, async (req, res) => {
 
   try {
 
