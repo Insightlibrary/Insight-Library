@@ -362,9 +362,13 @@ async function loadLoggedInUser() {
     const user =
       await response.json();
 
-    accountGreeting.textContent =
-      `Hi, ${user.name}`;
-      accountMenuName.textContent =
+    const firstName =
+  user.name.trim().split(" ")[0];
+
+accountGreeting.textContent =
+  `Hi, ${firstName}`;
+
+accountMenuName.textContent =
   user.name;
 
   } catch (error) {
