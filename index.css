@@ -1522,3 +1522,81 @@ input {
   }
 
 }
+/* ================================
+   ACCOUNT MENU
+================================ */
+
+.headercontainer {
+  position: relative;
+}
+
+.account-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 10px;
+}
+
+.account-menu {
+  display: none;
+
+  position: absolute;
+
+  top: 100%;
+  right: 55px;
+
+  width: 200px;
+
+  background: white;
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.15);
+
+  overflow: hidden;
+
+  z-index: 1000;
+}
+
+.account-menu.active {
+  display: block;
+}
+
+.account-menu-header {
+  padding: 15px;
+
+  border-bottom: 1px solid #eee;
+}
+
+.account-menu a,
+.account-menu button {
+  display: block;
+
+  width: 100%;
+
+  padding: 13px 15px;
+
+  box-sizing: border-box;
+
+  text-align: left;
+
+  text-decoration: none;
+
+  border: none;
+
+  background: white;
+
+  color: #222;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.account-menu a:hover,
+.account-menu button:hover {
+  background: #f5f5f5;
+}

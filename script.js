@@ -315,47 +315,130 @@ async function downloadContent(contentId) {
   }
 }
 
-//api search ends here 
+// ================================
+// ACCOUNT / LOGGED-IN USER
+// ================================
+
+const accountButton =
+  document.getElementById("account-btn");
+
+const accountGreeting =
+  document.getElementById("account-greeting");
+
+async function loadLoggedInUser() {
+
+  const token =
+    localStorage.getItem("token");
+
+  // User is not logged in
+  if (!token) {
+
+    accountGreeting.textContent =
+      "Hi";
+
+    return;
+  }
+
+  try {
+
+    const response = await fetch(
+      "https://insight-library.onrender.com/api/v1/auth/me",
+      {
+        headers: {
+          "Authorization":
+            `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+
+      accountGreeting.textContent =
+        "Hi";
+
+      return;
+    }
+
+    const user =
+      await response.json();
+
+    accountGreeting.textContent =
+      `Hi, ${user.name}`;
+      accountMenuName.textContent =
+  user.name;
+
+  } catch (error) {
+
+    console.error(
+      "Account loading error:",
+      error
+    );
+
+    accountGreeting.textContent =
+      "Hi";
+  }
+
+}
+
+loadLoggedInUser();
+
+// ================================
+// ACCOUNT MENU
+// ================================
+
+const accountMenu =
+  document.getElementById("account-menu");
+
+const accountMenuName =
+  document.getElementById("account-menu-name");
+
+const logoutButton =
+  document.getElementById("logout-btn");
 
 
-/*featured post start here 
+// OPEN / CLOSE ACCOUNT MENU
 
-const posts = [
-  {title:"Artificial Intelligence", link:""},
-  
-  {title:"Android Development", link:""},
-  
-  {title:"Blog Writing Guide", link:""},
-  
-  {title:"Coding With Js", link:""},
-  
-  {title:"Innovation Ideas", link:""},
-  
-  {title:"Internet Basics", link:""},
-  ];
-  
-  const searchInput = document.getElementById("searchInput");
-  const results = document.getElementById("results");
-  
-  searchInput.addEventListener("keyup", function(){
-   let input = searchInput.value.toLowerCase();
-   
-   results.innerHTML = "";
-   
-   posts.forEach(function(post){
-     if(post.title.toLowerCase().startsWith(input)) {
-       
-       results.innerHTML +=
-       `<div class="result-item">
-       <a href="${post.link}">${post.title}</a>
-       </div>`;
-     }
-     
-   });
-    
-  });
-  
-  /*featured post ends here */
+accountButton.addEventListener("click", () => {
+
+  accountMenu.classList.toggle("active");
+
+});
+
+
+// CLOSE MENU WHEN CLICKING OUTSIDE
+
+document.addEventListener("click", (event) => {
+
+  if (
+    !accountButton.contains(event.target) &&
+    !accountMenu.contains(event.target)
+  ) {
+
+    accountMenu.classList.remove("active");
+
+  }
+
+});
+
+// ================================
+// SIGN OUT
+// ================================
+
+logoutButton.addEventListener("click", () => {
+
+  // Remove the login token
+  localStorage.removeItem("token");
+
+  // Remove any pending purchase
+  localStorage.removeItem("pendingContentId");
+
+  // Close the account menu
+  accountMenu.classList.remove("active");
+
+  // Return to the homepage
+  window.location.href = "index.html";
+
+});
 
 
 
