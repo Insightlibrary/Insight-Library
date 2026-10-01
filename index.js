@@ -343,6 +343,41 @@ res.status(500).json({error:err.message})
 
 })
 
+/* ---------------- GET LOGGED-IN USER ---------------- */
+
+app.get("/api/v1/auth/me", auth, async (req, res) => {
+
+  try {
+
+    const user = await User.findById(req.user.id)
+      .select("name email role");
+
+    if (!user) {
+
+      return res.status(404).json({
+        message: "User not found"
+      });
+
+    }
+
+    res.json({
+      name: user.name,
+      email: user.email,
+      role: user.role
+    });
+
+  } catch (error) {
+
+    console.error("Get user error:", error);
+
+    res.status(500).json({
+      message: "Failed to get user information"
+    });
+
+  }
+
+});
+
 app.post("/api/v1/auth/forgot-password", async (req, res) => {
 
   try {
