@@ -16,7 +16,7 @@ const router = express.Router();
 const upload = multer({
   storage:
   multer.memoryStorage(),
-  limites: {
+  limits: {
     fileSize: 50 * 1024 * 1024
   },
   fileFilter: (req, file, cb) => {
@@ -38,15 +38,13 @@ router.post(
       const { title, description, price} = req.body;
       // check required fields
       if (!title || !description || price === undefined) {
-        return 
-        res.status(400).json({
+        return res.status(400).json({
           message: "Title, description and price are required"
         });
       }
       //check file
       if (!req.file) {
-        return 
-        res.status(400).json({
+        return res.status(400).json({
           message: "PDF file is required"
         });
       }
