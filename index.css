@@ -253,7 +253,7 @@ input {
 .sidebar {
   position: fixed;
 
-  top: 0;
+  top: 72px;
 
   right: -310px;
 
@@ -261,14 +261,14 @@ input {
 
   max-width: 85%;
 
-  height: 100vh;
+  height: calc(100vh - 72px);
 
   background: #ffffff;
 
   box-shadow:
     -10px 0 35px rgba(0, 0, 0, 0.12);
 
-  z-index: 2000;
+  z-index: 1000;
 
   padding: 30px 24px;
 
@@ -1334,6 +1334,10 @@ input {
   .header {
     height: 65px;
   }
+  .sidebar {
+  top: 65px;
+  height: calc(100vh - 65px);
+}
 
 
   .headercontainer {
