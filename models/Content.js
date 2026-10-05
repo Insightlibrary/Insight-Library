@@ -22,6 +22,20 @@ const contentSchema = new mongoose.Schema({
     required: true
   },
 
+  ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
+
+  isDeleted: {
+    type: Boolean,
+    default: false
+  },
+
+  deletedAt: {
+    type: Date
+  },
+
   createdAt: {
     type: Date,
     default: Date.now
