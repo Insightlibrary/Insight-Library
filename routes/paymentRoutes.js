@@ -253,9 +253,10 @@ router.get("/download-free/:contentId", async (req, res) => {
 
     // Create a command for the private Backblaze file
     const command = new GetObjectCommand({
-      Bucket: process.env.B2_BUCKET_NAME,
-      Key: content.fileUrl
-    });
+  Bucket: process.env.B2_BUCKET_NAME,
+  Key: content.fileUrl,
+  ResponseContentDisposition: 'attachment; filename="Insight-Library-content"',
+});
 
     // Create a temporary signed URL
     const url = await getSignedUrl(
