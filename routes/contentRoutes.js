@@ -5,10 +5,16 @@ const admin = require("../middleware/admin");
 
 const router = express.Router();
 
-// GET all contents
+
+// GET ALL ACTIVE CONTENT
 router.get("/", async (req, res) => {
   try {
-    const contents = await Content.find().sort({ createdAt: -1 });
+    const contents = await Content.find({
+      $or: [
+        { isDeleted: false },
+        { isDeleted: { $exists: false } }
+      ]
+    }).sort({ createdAt: -1 });
 
     res.json(contents);
 
@@ -21,10 +27,18 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET one content
+
+// GET ONE ACTIVE CONTENT
 router.get("/:id", async (req, res) => {
   try {
-    const content = await Content.findById(req.params.id);
+    const content = await Content.findOne({
+      _id: req.params.id,
+
+      $or: [
+        { isDeleted: false },
+        { isDeleted: { $exists: false } }
+      ]
+    });
 
     if (!content) {
       return res.status(404).json({
@@ -43,12 +57,23 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// CREATE new content
+
+// CREATE CONTENT
 router.post("/", auth, admin, async (req, res) => {
   try {
-    const { title, description, price, fileUrl } = req.body;
+    const {
+      title,
+      description,
+      price,
+      fileUrl
+    } = req.body;
 
-    if (!title || !description || price === undefined || !fileUrl) {
+    if (
+      !title ||
+      !description ||
+      price === undefined ||
+      !fileUrl
+    ) {
       return res.status(400).json({
         message: "All fields are required"
       });
@@ -58,7 +83,10 @@ router.post("/", auth, admin, async (req, res) => {
       title,
       description,
       price,
-      fileUrl
+      fileUrl,
+
+      // The person creating the content becomes its owner
+      ownerId: req.user.id
     });
 
     await content.save();
@@ -77,10 +105,13 @@ router.post("/", auth, admin, async (req, res) => {
   }
 });
 
-// TEMPORARY: Update PDF filename
+
+// UPDATE CONTENT FILE
 router.patch("/:id/file", auth, admin, async (req, res) => {
   try {
-    const { fileUrl } = req.body;
+    const {
+      fileUrl
+    } = req.body;
 
     if (!fileUrl) {
       return res.status(400).json({
@@ -88,10 +119,23 @@ router.patch("/:id/file", auth, admin, async (req, res) => {
       });
     }
 
-    const content = await Content.findByIdAndUpdate(
-      req.params.id,
-      { fileUrl },
-      { new: true }
+    const content = await Content.findOneAndUpdate(
+      {
+        _id: req.params.id,
+
+        $or: [
+          { isDeleted: false },
+          { isDeleted: { $exists: false } }
+        ]
+      },
+
+      {
+        fileUrl
+      },
+
+      {
+        new: true
+      }
     );
 
     if (!content) {
@@ -113,4 +157,6 @@ router.patch("/:id/file", auth, admin, async (req, res) => {
     });
   }
 });
+
+
 module.exports = router;
