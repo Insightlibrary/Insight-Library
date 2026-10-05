@@ -230,6 +230,59 @@ file.Body.pipe(res);
   }
 });
 
+// FREE CONTENT DOWNLOAD
+router.get("/download-free/:contentId", async (req, res) => {
+  try {
+    const { contentId } = req.params;
+
+    // Find the content
+    const content = await Content.findOne({
+      _id: contentId,
+      contentType: "free",
+      $or: [
+        { isDeleted: false },
+        { isDeleted: { $exists: false } }
+      ]
+    });
+
+    if (!content) {
+      return res.status(404).json({
+        message: "Free content not found"
+      });
+    }
+
+    // Create a command for the private Backblaze file
+    const command = new GetObjectCommand({
+      Bucket: process.env.B2_BUCKET_NAME,
+      Key: content.fileUrl
+    });
+
+    // Create a temporary signed URL
+    const url = await getSignedUrl(
+      s3,
+      command,
+      {
+        expiresIn: 900
+      }
+    );
+
+    res.json({
+      message: "Free download link created",
+      url
+    });
+
+  } catch (error) {
+    console.error(
+      "FREE DOWNLOAD ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      message: "Free download failed"
+    });
+  }
+});
+
 // GET USER'S SUCCESSFUL PURCHASES
 router.get("/my-purchases", auth, async (req, res) => {
   try {
