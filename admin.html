@@ -307,21 +307,39 @@
         ></textarea>
 
 
-        <label for="price">
-          Price (₦)
-        </label>
+        <label for="contentType">
+  Content Type
+</label>
 
-        <input
-          type="number"
-          id="price"
-          placeholder="Example: 1500"
-          min="1500"
-          required
-        >
+<select id="contentType" required>
+  <option value="paid">Paid Content</option>
+  <option value="free">Free Content</option>
+</select>
 
-        <div class="help">
-          Minimum paid content price is ₦1,500.
-        </div>
+<div class="help">
+  Choose whether customers should pay for this content
+  or download it for free.
+</div>
+
+
+<div id="priceSection">
+
+  <label for="price">
+    Price (₦)
+  </label>
+
+  <input
+    type="number"
+    id="price"
+    placeholder="Example: 1500"
+    min="1500"
+  >
+
+  <div class="help">
+    Minimum paid content price is ₦1,500.
+  </div>
+
+</div>
 
       </div>
 

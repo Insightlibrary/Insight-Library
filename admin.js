@@ -3,6 +3,33 @@ const message = document.getElementById("message");
 
 
 // ==================================================
+// FREE / PAID CONTENT
+// ==================================================
+
+const contentType =
+  document.getElementById("contentType");
+
+const priceSection =
+  document.getElementById("priceSection");
+
+
+// Show or hide price depending on content type
+contentType.addEventListener("change", () => {
+
+  if (contentType.value === "free") {
+
+    priceSection.style.display = "none";
+
+  } else {
+
+    priceSection.style.display = "block";
+
+  }
+
+});
+
+
+// ==================================================
 // PREVIEW SETTINGS
 // ==================================================
 
@@ -74,6 +101,9 @@ uploadForm.addEventListener("submit", async (event) => {
   const description =
     document.getElementById("description").value.trim();
 
+  const selectedContentType =
+    contentType.value;
+
   const price =
     document.getElementById("price").value;
 
@@ -90,7 +120,7 @@ uploadForm.addEventListener("submit", async (event) => {
   // BASIC VALIDATION
   // ==================================================
 
-  if (!title || !description || !price) {
+  if (!title || !description) {
 
     message.textContent =
       "Please fill in all required fields.";
@@ -111,13 +141,33 @@ uploadForm.addEventListener("submit", async (event) => {
 
 
   // ==================================================
-  // CHECK PRICE
+  // CHECK FREE / PAID CONTENT
   // ==================================================
 
-  if (Number(price) < 1500) {
+  if (
+    selectedContentType !== "free" &&
+    selectedContentType !== "paid"
+  ) {
 
     message.textContent =
-      "The minimum content price is ₦1,500.";
+      "Please choose whether this content is free or paid.";
+
+    return;
+
+  }
+
+
+  // ==================================================
+  // CHECK PAID CONTENT PRICE
+  // ==================================================
+
+  if (
+    selectedContentType === "paid" &&
+    (!price || Number(price) < 1500)
+  ) {
+
+    message.textContent =
+      "Paid content must have a minimum price of ₦1,500.";
 
     return;
 
@@ -140,8 +190,10 @@ uploadForm.addEventListener("submit", async (event) => {
     }
 
 
-    if (!previewPages.value ||
-        Number(previewPages.value) < 1) {
+    if (
+      !previewPages.value ||
+      Number(previewPages.value) < 1
+    ) {
 
       message.textContent =
         "Please enter the number of preview pages.";
@@ -200,8 +252,15 @@ uploadForm.addEventListener("submit", async (event) => {
   );
 
   formData.append(
+    "contentType",
+    selectedContentType
+  );
+
+  formData.append(
     "price",
-    price
+    selectedContentType === "free"
+      ? "0"
+      : price
   );
 
 
@@ -355,6 +414,10 @@ uploadForm.addEventListener("submit", async (event) => {
     uploadForm.reset();
 
 
+    // Reset price section
+    priceSection.style.display = "block";
+
+
     // Hide preview settings again
     previewSettings.style.display = "none";
 
@@ -380,3 +443,4 @@ uploadForm.addEventListener("submit", async (event) => {
   }
 
 });
+
