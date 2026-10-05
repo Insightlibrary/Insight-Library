@@ -356,7 +356,7 @@ async function downloadFreeContent(contentId) {
 }
 
 // ================================
-// ACCOUNT / LOGGED-IN USER
+// ACCOUNT / LOGGED-IN USERs
 // ================================
 
 const accountButton =
