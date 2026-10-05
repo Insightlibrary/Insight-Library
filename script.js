@@ -331,12 +331,12 @@ async function downloadFreeContent(contentId) {
     );
 
     if (!response.ok) {
-      const data = await response.json();
+  const errorText = await response.text();
 
-      throw new Error(
-        data.message || "Free download failed."
-      );
-    }
+  throw new Error(
+    errorText || "Free download failed."
+  );
+}
 
     // Get the file from the response
     const blob = await response.blob();
