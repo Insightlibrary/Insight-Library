@@ -107,6 +107,7 @@ router.post(
       const {
         title,
         description,
+        contentType,
         price,
 
         previewEnabled,
