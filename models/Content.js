@@ -1,14 +1,21 @@
 const mongoose = require("mongoose");
 
 const contentSchema = new mongoose.Schema({
+
+  // =========================
+  // BASIC CONTENT INFORMATION
+  // =========================
+
   title: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
 
   description: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
 
   price: {
@@ -17,15 +24,90 @@ const contentSchema = new mongoose.Schema({
     min: 0
   },
 
+
+  // =========================
+  // MAIN PAID FILE
+  // =========================
+
   fileUrl: {
     type: String,
     required: true
   },
 
+
+  // =========================
+  // CONTENT PREVIEW
+  // =========================
+
+  previewEnabled: {
+    type: Boolean,
+    default: false
+  },
+
+  previewFileUrl: {
+    type: String,
+    default: ""
+  },
+
+  previewPages: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+
+
+  // =========================
+  // COVER PAGE
+  // =========================
+
+  coverImageUrl: {
+    type: String,
+    default: ""
+  },
+
+
+  // =========================
+  // CREATOR
+  // =========================
+
   ownerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
   },
+
+
+  // =========================
+  // CREATOR SOCIAL LINKS
+  // =========================
+
+  socialLinks: {
+
+    tiktok: {
+      type: String,
+      default: ""
+    },
+
+    facebook: {
+      type: String,
+      default: ""
+    },
+
+    youtube: {
+      type: String,
+      default: ""
+    },
+
+    other: {
+      type: String,
+      default: ""
+    }
+
+  },
+
+
+  // =========================
+  // SOFT DELETE
+  // =========================
 
   isDeleted: {
     type: Boolean,
@@ -36,10 +118,16 @@ const contentSchema = new mongoose.Schema({
     type: Date
   },
 
+
+  // =========================
+  // DATE CREATED
+  // =========================
+
   createdAt: {
     type: Date,
     default: Date.now
   }
+
 });
 
 module.exports =
