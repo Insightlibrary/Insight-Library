@@ -75,3 +75,86 @@ uploadForm.addEventListener("submit", async (event) => {
   }
 
 });
+
+const migrateContentButton =
+  document.getElementById("migrateContentButton");
+
+const migrationMessage =
+  document.getElementById("migrationMessage");
+
+
+if (migrateContentButton) {
+
+  migrateContentButton.addEventListener("click", async () => {
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      migrationMessage.textContent =
+        "Please login first.";
+
+      return;
+    }
+
+
+    const confirmed = confirm(
+      "Assign all existing unowned content to the Super Admin?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    migrationMessage.textContent =
+      "Running migration...";
+
+
+    try {
+
+      const response = await fetch(
+        "https://insight-library.onrender.com/api/migration/assign-existing-content",
+        {
+          method: "POST",
+
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        }
+      );
+
+
+      const data = await response.json();
+
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Migration failed"
+        );
+      }
+
+
+      migrationMessage.textContent =
+        `Migration completed. ${data.modified} content item(s) assigned to the Super Admin.`;
+
+
+      console.log(
+        "CONTENT MIGRATION RESULT:",
+        data
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "CONTENT MIGRATION ERROR:",
+        error
+      );
+
+      migrationMessage.textContent =
+        "Migration failed: " + error.message;
+    }
+
+  });
+
+}
