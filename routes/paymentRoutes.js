@@ -251,26 +251,35 @@ router.get("/download-free/:contentId", async (req, res) => {
       });
     }
 
-    // Create a command for the private Backblaze file
+    // Get the file directly from Backblaze B2
     const command = new GetObjectCommand({
-  Bucket: process.env.B2_BUCKET_NAME,
-  Key: content.fileUrl,
-  ResponseContentDisposition: 'attachment; filename="Insight-Library-content"',
-});
+      Bucket: process.env.B2_BUCKET_NAME,
+      Key: content.fileUrl
+    });
 
-    // Create a temporary signed URL
-    const url = await getSignedUrl(
-      s3,
-      command,
-      {
-        expiresIn: 900
-      }
+    const file = await s3.send(command);
+
+    // Get the original filename from the B2 file path
+    const fileName =
+      content.fileUrl.split("/").pop() ||
+      "Insight-Library-content";
+
+    // Tell the browser to download the file
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${fileName}"`
     );
 
-    res.json({
-      message: "Free download link created",
-      url
-    });
+    // Preserve the file's content type when B2 provides it
+    if (file.ContentType) {
+      res.setHeader(
+        "Content-Type",
+        file.ContentType
+      );
+    }
+
+    // Send the file to the user
+    file.Body.pipe(res);
 
   } catch (error) {
     console.error(
