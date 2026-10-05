@@ -2,12 +2,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 const Content = require("../models/Content");
+const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 
 const router = express.Router();
 
 
 // TEMPORARY CONTENT OWNERSHIP MIGRATION
-router.post("/assign-existing-content", async (req, res) => {
+router.post("/assign-existing-content", auth, admin, async (req, res) => {
   try {
 
     // Find the User model already registered by index.js
