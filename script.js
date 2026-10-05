@@ -160,23 +160,31 @@ async function loadContents() {
 
       let button;
 
-      if (alreadyPurchased) {
+if (content.contentType === "free") {
 
-        button = `
-          <button onclick="downloadContent('${content._id}')">
-            Download Content
-          </button>
-        `;
+  button = `
+    <button onclick="downloadFreeContent('${content._id}')">
+      Download Free
+    </button>
+  `;
 
-      } else {
+} else if (alreadyPurchased) {
 
-        button = `
-          <button onclick="buyContent('${content._id}')">
-            Buy Now
-          </button>
-        `;
+  button = `
+    <button onclick="downloadContent('${content._id}')">
+      Download Content
+    </button>
+  `;
 
-      }
+} else {
+
+  button = `
+    <button onclick="buyContent('${content._id}')">
+      Buy Now
+    </button>
+  `;
+
+}
 
       return `
         <div class="content-card">
