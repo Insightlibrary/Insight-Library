@@ -124,18 +124,62 @@ router.post(
       // CHECK REQUIRED INFORMATION
       // ==================================================
 
-      if (
-        !title ||
-        !description ||
-        price === undefined
-      ) {
+    if (
+  !title ||
+  !description ||
+  !contentType
+) {
 
-        return res.status(400).json({
-          message:
-            "Title, description and price are required"
-        });
+  return res.status(400).json({
+    message:
+      "Title, description and content type are required"
+  });
 
-      }
+}
+
+// ==================================================
+// CHECK FREE OR PAID CONTENT
+// ==================================================
+
+if (
+  contentType !== "free" &&
+  contentType !== "paid"
+) {
+
+  return res.status(400).json({
+    message:
+      "Content type must be free or paid"
+  });
+
+}
+
+
+// FREE CONTENT MUST HAVE PRICE 0
+
+if (contentType === "free") {
+
+  req.body.price = 0;
+
+}
+
+
+// PAID CONTENT MUST BE AT LEAST ₦1,500
+
+if (contentType === "paid") {
+
+  if (
+    price === undefined ||
+    Number(price) < 1500
+  ) {
+
+    return res.status(400).json({
+      message:
+        "Paid content must have a minimum price of ₦1,500"
+    });
+
+  }
+
+}
 
 
       // ==================================================
@@ -387,10 +431,14 @@ router.post(
 
           description:
             description.trim(),
+            
+         contentType:
+            contentType,
 
           price:
-            Number(price),
-
+  contentType === "free"
+    ? 0
+    : Number(price),
 
           // Main paid file
           fileUrl:
