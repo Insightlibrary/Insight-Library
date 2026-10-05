@@ -323,6 +323,38 @@ async function downloadContent(contentId) {
   }
 }
 
+// DOWNLOAD FREE CONTENT
+async function downloadFreeContent(contentId) {
+  try {
+
+    const response = await fetch(
+      `https://insight-library.onrender.com/api/payments/download-free/${contentId}`
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Free download failed."
+      );
+    }
+
+    // Open the temporary B2 download link
+    window.location.href = data.url;
+
+  } catch (error) {
+
+    console.error(
+      "Free download error:",
+      error
+    );
+
+    alert(
+      error.message || "Free download failed."
+    );
+  }
+}
+
 // ================================
 // ACCOUNT / LOGGED-IN USER
 // ================================
