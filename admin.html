@@ -1,105 +1,538 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Admin - Upload Content</title>
 
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f5f5f5;
+
+    * {
+      box-sizing: border-box;
     }
+
+
+    body {
+
+      margin: 0;
+
+      padding: 20px;
+
+      font-family: Arial, sans-serif;
+
+      background: #f5f5f5;
+
+      color: #222;
+
+    }
+
 
     .container {
-      max-width: 500px;
+
+      width: 100%;
+
+      max-width: 650px;
+
       margin: auto;
+
       background: white;
-      padding: 20px;
-      border-radius: 10px;
+
+      padding: 25px;
+
+      border-radius: 12px;
+
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
     }
 
+
     h1 {
+
       text-align: center;
+
+      margin-top: 0;
+
+      margin-bottom: 10px;
+
     }
+
+
+    .intro {
+
+      text-align: center;
+
+      color: #666;
+
+      margin-bottom: 25px;
+
+      line-height: 1.5;
+
+    }
+
+
+    .section {
+
+      margin-top: 25px;
+
+      padding-top: 20px;
+
+      border-top: 1px solid #ddd;
+
+    }
+
+
+    .section h2 {
+
+      font-size: 19px;
+
+      margin-top: 0;
+
+      margin-bottom: 15px;
+
+    }
+
+
+    label {
+
+      display: block;
+
+      margin-top: 15px;
+
+      margin-bottom: 6px;
+
+      font-weight: bold;
+
+    }
+
 
     input,
     textarea,
     button {
+
       width: 100%;
-      box-sizing: border-box;
-      margin-top: 10px;
+
       padding: 12px;
+
       font-size: 16px;
+
+      border-radius: 6px;
+
     }
+
+
+    input,
+    textarea {
+
+      border: 1px solid #ccc;
+
+    }
+
 
     textarea {
-      min-height: 120px;
+
+      min-height: 130px;
+
+      resize: vertical;
+
     }
+
+
+    input[type="file"] {
+
+      background: #fafafa;
+
+      cursor: pointer;
+
+    }
+
+
+    .help {
+
+      margin-top: 5px;
+
+      color: #777;
+
+      font-size: 13px;
+
+      line-height: 1.4;
+
+    }
+
+
+    .preview-box {
+
+      margin-top: 15px;
+
+      padding: 15px;
+
+      background: #f8f8f8;
+
+      border-radius: 8px;
+
+    }
+
+
+    .checkbox-row {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin-top: 15px;
+
+    }
+
+
+    .checkbox-row input {
+
+      width: auto;
+
+    }
+
+
+    .checkbox-row label {
+
+      margin: 0;
+
+    }
+
+
+    #previewSettings {
+
+      display: none;
+
+    }
+
 
     button {
-      cursor: pointer;
-      background: #222;
-      color: white;
+
+      margin-top: 25px;
+
       border: none;
-      border-radius: 5px;
+
+      background: #222;
+
+      color: white;
+
+      cursor: pointer;
+
+      font-weight: bold;
+
     }
 
-    #message {
-      margin-top: 15px;
-      font-weight: bold;
+
+    button:hover {
+
+      opacity: 0.9;
+
     }
+
+
+    #message {
+
+      margin-top: 15px;
+
+      font-weight: bold;
+
+      text-align: center;
+
+      line-height: 1.5;
+
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
+
   <div class="container">
+
 
     <h1>Upload Content</h1>
 
+
+    <p class="intro">
+
+      Add a digital product that customers can purchase
+      and download from Insight-Library.
+
+    </p>
+
+
     <form id="uploadForm">
 
-      <input
-        type="text"
-        id="title"
-        placeholder="Content title"
-        required
-      >
 
-      <textarea
-        id="description"
-        placeholder="Content description"
-        required
-      ></textarea>
+      <!-- =========================================
+           BASIC INFORMATION
+      ========================================== -->
 
-      <input
-        type="number"
-        id="price"
-        placeholder="Price in Naira"
-        min="0"
-        required
-      >
+      <div class="section">
 
-      <input
-        type="file"
-        id="file"
-        accept="application/pdf"
-        required
-      >
+        <h2>1. Basic Information</h2>
+
+
+        <label for="title">
+          Content Title
+        </label>
+
+        <input
+          type="text"
+          id="title"
+          placeholder="Enter content title"
+          required
+        >
+
+
+        <label for="description">
+          Description
+        </label>
+
+        <textarea
+          id="description"
+          placeholder="Describe what customers will get..."
+          required
+        ></textarea>
+
+
+        <label for="price">
+          Price (₦)
+        </label>
+
+        <input
+          type="number"
+          id="price"
+          placeholder="Example: 1500"
+          min="1500"
+          required
+        >
+
+        <div class="help">
+          Minimum paid content price is ₦1,500.
+        </div>
+
+      </div>
+
+
+
+      <!-- =========================================
+           MAIN CONTENT FILE
+      ========================================== -->
+
+      <div class="section">
+
+        <h2>2. Main Content File</h2>
+
+
+        <label for="file">
+          Upload Main File
+        </label>
+
+        <input
+          type="file"
+          id="file"
+          accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip"
+          required
+        >
+
+
+        <div class="help">
+
+          Supported formats:
+          PDF, DOC, DOCX, XLS, XLSX,
+          PPT, PPTX, TXT, CSV and ZIP.
+
+          Maximum file size: 50MB.
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =========================================
+           PREVIEW
+      ========================================== -->
+
+      <div class="section">
+
+        <h2>3. Content Preview</h2>
+
+
+        <div class="checkbox-row">
+
+          <input
+            type="checkbox"
+            id="previewEnabled"
+          >
+
+          <label for="previewEnabled">
+            Allow customers to preview this content
+          </label>
+
+        </div>
+
+
+        <div
+          id="previewSettings"
+          class="preview-box"
+        >
+
+          <label for="previewFile">
+            Preview PDF
+          </label>
+
+          <input
+            type="file"
+            id="previewFile"
+            accept=".pdf,application/pdf"
+          >
+
+
+          <div class="help">
+
+            Upload a separate PDF containing the
+            pages customers are allowed to preview.
+
+          </div>
+
+
+          <label for="previewPages">
+            Number of Preview Pages
+          </label>
+
+          <input
+            type="number"
+            id="previewPages"
+            min="1"
+            placeholder="Example: 5"
+          >
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =========================================
+           COVER IMAGE
+      ========================================== -->
+
+      <div class="section">
+
+        <h2>4. Cover Image</h2>
+
+
+        <label for="cover">
+          Upload Cover Image (Optional)
+        </label>
+
+        <input
+          type="file"
+          id="cover"
+          accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+        >
+
+
+        <div class="help">
+
+          Optional. Supported formats:
+          JPG, PNG and WebP.
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =========================================
+           SOCIAL LINKS
+      ========================================== -->
+
+      <div class="section">
+
+        <h2>5. Creator Social Links</h2>
+
+
+        <label for="tiktok">
+          TikTok
+        </label>
+
+        <input
+          type="url"
+          id="tiktok"
+          placeholder="https://www.tiktok.com/@username"
+        >
+
+
+        <label for="facebook">
+          Facebook
+        </label>
+
+        <input
+          type="url"
+          id="facebook"
+          placeholder="https://www.facebook.com/username"
+        >
+
+
+        <label for="youtube">
+          YouTube
+        </label>
+
+        <input
+          type="url"
+          id="youtube"
+          placeholder="https://www.youtube.com/@channel"
+        >
+
+
+        <label for="other">
+          Other Link
+        </label>
+
+        <input
+          type="url"
+          id="other"
+          placeholder="https://example.com"
+        >
+
+      </div>
+
+
+
+      <!-- =========================================
+           SUBMIT
+      ========================================== -->
 
       <button type="submit">
         Upload Content
       </button>
 
+
+      <div id="message"></div>
+
+
     </form>
 
-    <div id="message"></div>
 
   </div>
 
+
   <script src="admin.js"></script>
+
 </body>
+
 </html>

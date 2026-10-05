@@ -18,6 +18,13 @@ const contentSchema = new mongoose.Schema({
     trim: true
   },
 
+contentType: {
+  type: String,
+  enum: ["free", "paid"],
+  default: "paid",
+  required: true
+},
+
   price: {
     type: Number,
     required: true,
