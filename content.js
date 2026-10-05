@@ -194,9 +194,25 @@ function displayContent(
   let button;
 
 
-  // User already purchased
+  // FREE CONTENT
 
-  if (alreadyPurchased) {
+  if (currentContent.contentType === "free") {
+
+    button = `
+
+      <button
+        onclick="downloadFreeContent('${contentId}')"
+      >
+        Download Free
+      </button>
+
+    `;
+
+  }
+
+  // USER ALREADY PURCHASED PAID CONTENT
+
+  else if (alreadyPurchased) {
 
     button = `
 
@@ -210,7 +226,7 @@ function displayContent(
 
   }
 
-  // User has not purchased
+  // PAID CONTENT NOT PURCHASED
 
   else {
 
@@ -245,13 +261,24 @@ function displayContent(
 
 
     <div class="content-price">
-      ₦${currentContent.price.toLocaleString()}
+
+      ${
+        currentContent.contentType === "free"
+          ? "Free"
+          : `₦${currentContent.price.toLocaleString()}`
+      }
+
     </div>
 
 
     <p class="content-note">
-      Secure digital purchase •
-      Instant access after payment
+
+      ${
+        currentContent.contentType === "free"
+          ? "Free digital download"
+          : "Secure digital purchase • Instant access after payment"
+      }
+
     </p>
 
 
@@ -260,7 +287,6 @@ function displayContent(
   `;
 
 }
-
 
 // ================================
 // BUY CONTENT
@@ -493,6 +519,124 @@ async function downloadContent(
     alert(
       error.message ||
       "Download failed."
+    );
+
+  }
+
+}
+
+// ================================
+// DOWNLOAD FREE CONTENT
+// ================================
+
+async function downloadFreeContent(
+  contentId
+) {
+
+  try {
+
+    const response = await fetch(
+      `https://insight-library.onrender.com/api/payments/download-free/${contentId}`
+    );
+
+
+    if (!response.ok) {
+
+      const errorText =
+        await response.text();
+
+      throw new Error(
+        errorText ||
+        "Free download failed."
+      );
+
+    }
+
+
+    // Receive the file
+    const blob =
+      await response.blob();
+
+
+    // Create temporary URL
+    const downloadUrl =
+      URL.createObjectURL(blob);
+
+
+    // Create download link
+    const link =
+      document.createElement("a");
+
+
+    link.href =
+      downloadUrl;
+
+
+    // Get filename from server
+    const contentDisposition =
+      response.headers.get(
+        "Content-Disposition"
+      );
+
+
+    let fileName =
+      "Insight-Library-content";
+
+
+    if (contentDisposition) {
+
+      const match =
+        contentDisposition.match(
+          /filename="([^"]+)"/
+        );
+
+
+      if (match && match[1]) {
+
+        fileName =
+          match[1];
+
+      }
+
+    }
+
+
+    link.download =
+      fileName;
+
+
+    document.body.appendChild(
+      link
+    );
+
+
+    link.click();
+
+
+    link.remove();
+
+
+    // Clean up
+    setTimeout(() => {
+
+      URL.revokeObjectURL(
+        downloadUrl
+      );
+
+    }, 1000);
+
+
+  } catch (error) {
+
+    console.error(
+      "Free download error:",
+      error
+    );
+
+
+    alert(
+      error.message ||
+      "Free download failed."
     );
 
   }
