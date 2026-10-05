@@ -5,7 +5,6 @@ const express = require("express")
 const paymentRoutes = require("./routes/paymentRoutes");
 const contentRoutes = require("./routes/contentRoutes");
 const adminContentRoutes = require("./routes/adminContentRoutes");
-const migrationRoutes = require("./routes/migrationRoutes");
 const authMiddleware = require("./middleware/auth");
 const mongoose = require("mongoose")
 const cors = require("cors")
@@ -36,7 +35,6 @@ app.use(express.json())
 app.use("/api/payments", paymentRoutes);
 app.use("/api/contents", contentRoutes);
 app.use("/api/admin/content", adminContentRoutes);
-app.use("/api/migration", migrationRoutes);
 app.use(morgan("dev"))
 
 const limiter = rateLimit({
