@@ -187,6 +187,10 @@ async function checkPurchase() {
 // DISPLAY CONTENT
 // ================================
 
+// ================================
+// DISPLAY CONTENT
+// ================================
+
 function displayContent(
   alreadyPurchased
 ) {
@@ -242,29 +246,43 @@ function displayContent(
 
   }
 
-<div class="content-price">
 
-  ${
-    currentContent.contentType === "free"
-      ? "Free"
-      : `${
-          currentContent.priceCurrency === "USD"
-            ? "$"
-            : currentContent.priceCurrency === "GBP"
-            ? "£"
-            : currentContent.priceCurrency === "EUR"
-            ? "€"
-            : currentContent.priceCurrency === "CAD"
-            ? "CA$"
-            : currentContent.priceCurrency === "AUD"
-            ? "A$"
-            : currentContent.priceCurrency === "ZAR"
-            ? "R"
-            : "₦"
-        }${currentContent.price.toLocaleString()}`
-  }
+  contentPage.innerHTML = `
 
-</div>
+    <h1>
+      ${currentContent.title}
+    </h1>
+
+
+    <p class="content-description">
+      ${currentContent.description}
+    </p>
+
+
+    <div class="content-price">
+
+      ${
+        currentContent.contentType === "free"
+          ? "Free"
+          : `${
+              currentContent.priceCurrency === "USD"
+                ? "$"
+                : currentContent.priceCurrency === "GBP"
+                ? "£"
+                : currentContent.priceCurrency === "EUR"
+                ? "€"
+                : currentContent.priceCurrency === "CAD"
+                ? "CA$"
+                : currentContent.priceCurrency === "AUD"
+                ? "A$"
+                : currentContent.priceCurrency === "ZAR"
+                ? "R"
+                : "₦"
+            }${currentContent.price.toLocaleString()}`
+      }
+
+    </div>
+
 
     <p class="content-note">
 
