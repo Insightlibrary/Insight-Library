@@ -6,6 +6,7 @@ const s3 = require("../config/b2");
 const Content = require("../models/Content");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
+const getExchangeRate = require("../config/exchangeRates");
 
 const router = express.Router();
 
@@ -109,6 +110,7 @@ router.post(
         description,
         contentType,
         price,
+        priceCurrency,
 
         previewEnabled,
         previewPages,
@@ -155,32 +157,121 @@ if (
 }
 
 
-// FREE CONTENT MUST HAVE PRICE 0
+// ==================================================
+// PRICE AND CURRENCY VALIDATION
+// ==================================================
+
+const supportedCurrencies = [
+  "NGN",
+  "USD",
+  "GBP",
+  "EUR",
+  "CAD",
+  "AUD",
+  "ZAR"
+];
+
+
+// ==================================================
+// FREE CONTENT
+// ==================================================
 
 if (contentType === "free") {
 
+  // Free content always has zero price.
   req.body.price = 0;
+
+  // Free content does not need currency validation.
+  req.body.priceCurrency = "NGN";
 
 }
 
 
-// PAID CONTENT MUST BE AT LEAST ₦1,500
+// ==================================================
+// PAID CONTENT
+// ==================================================
 
 if (contentType === "paid") {
 
+  // Check that a price was supplied.
   if (
     price === undefined ||
-    Number(price) < 1500
+    price === null ||
+    price === ""
   ) {
 
     return res.status(400).json({
       message:
-        "Paid content must have a minimum price of ₦1,500"
+        "Paid content must have a price"
+    });
+
+  }
+
+
+  // Convert price to a number.
+  const numericPrice = Number(price);
+
+
+  // Make sure the price is a valid positive number.
+  if (
+    !Number.isFinite(numericPrice) ||
+    numericPrice <= 0
+  ) {
+
+    return res.status(400).json({
+      message:
+        "Paid content must have a valid price"
+    });
+
+  }
+
+
+  // Check the selected currency.
+  if (
+    !supportedCurrencies.includes(
+      priceCurrency
+    )
+  ) {
+
+    return res.status(400).json({
+      message:
+        "This pricing currency is not supported"
+    });
+
+  }
+
+
+  // Get the current exchange rate
+  // from the creator's currency to NGN.
+  const exchangeRate =
+    await getExchangeRate(
+      priceCurrency,
+      "NGN"
+    );
+
+
+  // Calculate the approximate NGN value.
+  const ngnEquivalent =
+    numericPrice * exchangeRate;
+
+
+  // Enforce the ₦1,500 minimum.
+  if (ngnEquivalent < 1500) {
+
+    return res.status(400).json({
+
+      message:
+        "Paid content must be at least the equivalent of ₦1,500",
+
+      ngnEquivalent:
+        Math.round(ngnEquivalent * 100) / 100
+
     });
 
   }
 
 }
+
 
 
       // ==================================================
@@ -440,6 +531,11 @@ if (contentType === "paid") {
   contentType === "free"
     ? 0
     : Number(price),
+
+priceCurrency:
+  contentType === "free"
+    ? "NGN"
+    : priceCurrency,
 
           // Main paid file
           fileUrl:

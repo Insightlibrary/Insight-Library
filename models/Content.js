@@ -31,6 +31,12 @@ contentType: {
     min: 0
   },
 
+priceCurrency: {
+  type: String,
+  enum: ["NGN", "USD", "GBP", "EUR", "CAD", "AUD", "ZAR"],
+  default: "NGN",
+  required: true
+},
 
   // =========================
   // MAIN PAID FILE

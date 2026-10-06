@@ -107,6 +107,8 @@ uploadForm.addEventListener("submit", async (event) => {
   const price =
     document.getElementById("price").value;
 
+const priceCurrency =
+  document.getElementById("priceCurrency").value;
 
   // ==================================================
   // GET MAIN FILE
@@ -158,21 +160,20 @@ uploadForm.addEventListener("submit", async (event) => {
 
 
   // ==================================================
-  // CHECK PAID CONTENT PRICE
-  // ==================================================
+// CHECK PAID CONTENT PRICE
+// ==================================================
 
-  if (
-    selectedContentType === "paid" &&
-    (!price || Number(price) < 1500)
-  ) {
+if (
+  selectedContentType === "paid" &&
+  (!price || Number(price) <= 0)
+) {
 
-    message.textContent =
-      "Paid content must have a minimum price of ₦1,500.";
+  message.textContent =
+    "Please enter a valid price for paid content.";
 
-    return;
+  return;
 
-  }
-
+}
 
   // ==================================================
   // PREVIEW VALIDATION
@@ -263,6 +264,12 @@ uploadForm.addEventListener("submit", async (event) => {
       : price
   );
 
+formData.append(
+  "priceCurrency",
+  selectedContentType === "free"
+    ? "NGN"
+    : priceCurrency
+);
 
   // ==================================================
   // MAIN FILE
