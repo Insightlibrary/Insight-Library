@@ -17,6 +17,7 @@ const PasswordReset = require("./models/PasswordReset");
 const transporter = require("./config/email");
 const sendGmail = require("./config/gmail");
 const { google } = require("googleapis");
+const User = require("./models/User");
 
 const app = express()
 app.set("trust proxy", 1);
@@ -109,7 +110,7 @@ default:Date.now
 
 })
 
-const User = mongoose.model("User",userSchema)
+const oldUser = mongoose.model("User",userSchema)
 
 // ✅ IMPORT MODEL
 const Post = require("./models/Post");
