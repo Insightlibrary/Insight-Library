@@ -76,41 +76,7 @@ const upload = multer({storage})
 
 /* ---------------- USER MODEL ---------------- */
 
-const userSchema = new mongoose.Schema({
-
-name:{
-type:String,
-required:true
-},
-
-email:{
-type:String,
-required:true,
-unique:true
-},
-
-password:{
-type:String,
-required:true
-},
-
-role:{
-type:String,
-default:"user"
-},
-
-age:Number,
-
-avatar:String,
-
-createdAt:{
-type:Date,
-default:Date.now
-}
-
-})
-
-const oldUser = mongoose.model("User",userSchema)
+// User model is now in models/User.js
 
 // ✅ IMPORT MODEL
 const Post = require("./models/Post");
