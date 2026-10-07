@@ -83,22 +83,6 @@
 
       </a>
 
-<!-- SEARCH BUTTON -->
-
-<a
-  href="#searchInput"
-  class="search-icon"
-  aria-label="Search"
->
-
-  <img
-    src="search-icon.png"
-    alt="Search"
-  >
-
-</a>
-
-
 <!-- ACCOUNT BUTTON -->
 
 <button
@@ -107,17 +91,11 @@
   type="button"
   aria-label="Open account menu"
 >
-<!-- ACCOUNT BUTTON -->
 
-<button
-  id="account-btn"
-  class="account-btn"
-  type="button"
-  aria-label="Open account menu"
->
   <span id="account-greeting">
     Hi
   </span>
+
 </button>
 
 <!-- ACCOUNT DROPDOWN -->
@@ -152,6 +130,7 @@
 
 </div>
 
+
       <!-- MENU BUTTON -->
 
       <button
@@ -173,7 +152,38 @@
 
   </header>
 
+<!-- ================================
+     CURRENCY SELECTOR
+================================ -->
 
+<div class="currency-bar">
+
+  <label for="currency-select">
+    Currency
+  </label>
+
+  <select
+    id="currency-select"
+    aria-label="Select currency"
+  >
+
+    <option value="NGN">₦ NGN</option>
+
+    <option value="USD">$ USD</option>
+
+    <option value="GBP">£ GBP</option>
+
+    <option value="EUR">€ EUR</option>
+
+    <option value="CAD">CA$ CAD</option>
+
+    <option value="AUD">A$ AUD</option>
+
+    <option value="ZAR">R ZAR</option>
+
+  </select>
+
+</div>
 
   <!-- ================================
        SIDE MENU

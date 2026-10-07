@@ -178,6 +178,7 @@ input {
   object-fit: contain;
 }
 
+
 /* ==================================================
    MENU BUTTON
 ================================================== */
@@ -1602,4 +1603,64 @@ input {
 .account-menu a:hover,
 .account-menu button:hover {
   background: #f5f5f5;
+}
+
+
+/* ================================
+   CURRENCY BAR
+================================ */
+
+.currency-bar {
+  width: 100%;
+
+  min-height: 44px;
+
+  padding: 7px 14px;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #e9ecf1;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: 7px;
+}
+
+.currency-bar label {
+  color: #697386;
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+.currency-bar select {
+  height: 30px;
+
+  padding: 0 8px;
+
+  border: 1px solid #dfe3e9;
+
+  border-radius: 7px;
+
+  background: #f7f8fa;
+
+  color: #172033;
+
+  font-size: 12px;
+
+  outline: none;
+
+  cursor: pointer;
+}
+
+.currency-bar select:focus {
+  border-color: #f28c28;
+
+  box-shadow:
+    0 0 0 2px rgba(242, 140, 40, 0.10);
 }

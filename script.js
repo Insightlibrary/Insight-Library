@@ -540,7 +540,35 @@ logoutButton.addEventListener("click", () => {
 
 });
 
+// ================================
+// BUYER CURRENCY SELECTION
+// ================================
 
+const currencySelect =
+  document.getElementById("currency-select");
+
+if (currencySelect) {
+
+  const savedCurrency =
+    localStorage.getItem("buyerCurrency");
+
+  if (savedCurrency) {
+    currencySelect.value = savedCurrency;
+  }
+
+  currencySelect.addEventListener(
+    "change",
+    function () {
+
+      localStorage.setItem(
+        "buyerCurrency",
+        currencySelect.value
+      );
+
+    }
+  );
+
+}
 
 
 
