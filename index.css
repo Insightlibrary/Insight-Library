@@ -178,31 +178,6 @@ input {
   object-fit: contain;
 }
 
-
-/* ================================
-   CURRENCY SELECTOR
-================================ */
-
-.currency-selector {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.currency-selector label {
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.currency-selector select {
-  padding: 7px 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: white;
-  font-size: 13px;
-  cursor: pointer;
-}
-
 /* ==================================================
    MENU BUTTON
 ================================================== */
