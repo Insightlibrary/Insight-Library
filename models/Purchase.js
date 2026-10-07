@@ -13,9 +13,41 @@ const purchaseSchema = new mongoose.Schema({
     required: true
   },
 
+  // Original content price
   amount: {
     type: Number,
     required: true
+  },
+
+  // Original content currency
+  currency: {
+    type: String,
+    default: "NGN",
+    required: true
+  },
+
+  // Original/source price and currency
+  sourceAmount: {
+    type: Number
+  },
+
+  sourceCurrency: {
+    type: String
+  },
+
+  // Actual amount sent to Paystack
+  transactionAmount: {
+    type: Number
+  },
+
+  // Actual currency sent to Paystack
+  transactionCurrency: {
+    type: String
+  },
+
+  // Exchange rate used if conversion was necessary
+  exchangeRate: {
+    type: Number
   },
 
   paystackReference: {
