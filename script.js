@@ -194,8 +194,26 @@ if (content.contentType === "free") {
           <p>${content.description}</p>
 
           <p>
-            Price: ₦${content.price.toLocaleString()}
-          </p>
+  Price: ${
+    content.contentType === "free"
+      ? "Free"
+      : `${
+          content.priceCurrency === "USD"
+            ? "$"
+            : content.priceCurrency === "GBP"
+            ? "£"
+            : content.priceCurrency === "EUR"
+            ? "€"
+            : content.priceCurrency === "CAD"
+            ? "CA$"
+            : content.priceCurrency === "AUD"
+            ? "A$"
+            : content.priceCurrency === "ZAR"
+            ? "R"
+            : "₦"
+        }${content.price.toLocaleString()}`
+  }
+</p>
 
           ${button}
 
