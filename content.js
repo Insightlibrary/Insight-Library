@@ -324,7 +324,6 @@ async function buyContent(
         contentId
       );
 
-
       window.location.href =
         "login.html";
 
@@ -339,6 +338,8 @@ async function buyContent(
       contentId
     );
 
+const buyerCurrency =
+  localStorage.getItem("buyerCurrency") || "NGN";
 
     const response = await fetch(
       "https://insight-library.onrender.com/api/payments/initialize",
@@ -358,8 +359,10 @@ async function buyContent(
         body: JSON.stringify({
 
           contentId:
-            contentId
-
+            contentId,
+            
+          buyerCurrency:
+            buyerCurrency
         })
 
       }
