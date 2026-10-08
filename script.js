@@ -417,9 +417,24 @@ localStorage.setItem("pendingContentId", contentId);
     const data = await response.json();
 
     if (!response.ok) {
-      alert(data.message || "Payment could not be initialized.");
-      return;
-    }
+
+  if (
+    buyerCurrency === "USD" &&
+    data.message &&
+    data.message.includes("Paystack")
+  ) {
+    alert(
+      "USD checkout is not currently available. Please switch your currency to NGN and try again."
+    );
+  } else {
+    alert(
+      data.message ||
+      "Payment could not be initialized."
+    );
+  }
+
+  return;
+}
 
     // Send customer to Paystack Checkout
     window.location.href =
