@@ -151,76 +151,217 @@ async function loadContents() {
       }
     }
 
-    const contentList = document.getElementById("content-list");
+    const contentList =
+  document.getElementById("content-list");
 
-    contentList.innerHTML = contents.map(content => {
 
+// Get the buyer's selected currency
+const buyerCurrency =
+  localStorage.getItem("buyerCurrency") || "NGN";
+
+
+// Convert prices before displaying the cards
+const contentCards =
+  await Promise.all(
+    
+    contents.map(async content => {
+      
       const alreadyPurchased =
-        purchasedContentIds.includes(content._id);
-
+        purchasedContentIds.includes(
+          content._id
+        );
+      
+      
+      // ================================
+      // BUTTON
+      // ================================
+      
       let button;
+      
+      if (content.contentType === "free") {
+        
+        button = `
+          <button
+            onclick="downloadFreeContent('${content._id}')"
+          >
+            Download Free
+          </button>
+        `;
+        
+      } else if (alreadyPurchased) {
+        
+        button = `
+          <button
+            onclick="downloadContent('${content._id}')"
+          >
+            Download Content
+          </button>
+        `;
+        
+      } else {
+        
+        button = `
+          <button
+            onclick="buyContent('${content._id}')"
+          >
+            Buy Now
+          </button>
+        `;
+        
+      }
+      
+      
+      // ================================
+      // FREE CONTENT
+      // ================================
+      
+      if (
+        content.contentType === "free"
+      ) {
+        
+        return `
+          <div class="content-card">
 
-if (content.contentType === "free") {
+            <h2>${content.title}</h2>
 
-  button = `
-    <button onclick="downloadFreeContent('${content._id}')">
-      Download Free
-    </button>
-  `;
+            <p>${content.description}</p>
 
-} else if (alreadyPurchased) {
+            <p>
+              Price: Free
+            </p>
 
-  button = `
-    <button onclick="downloadContent('${content._id}')">
-      Download Content
-    </button>
-  `;
+            ${button}
 
-} else {
+          </div>
+        `;
+        
+      }
+      
+      
+      // ================================
+      // GET CONVERTED PRICE
+      // ================================
+      
+      try {
+        
+        const conversionResponse =
+          await fetch(
+            `https://insight-library.onrender.com/api/currency/convert/${content._id}?currency=${buyerCurrency}`
+          );
+        
+        
+        if (!conversionResponse.ok) {
+          
+          throw new Error(
+            "Price conversion failed"
+          );
+          
+        }
+        
+        
+        const conversion =
+          await conversionResponse.json();
+        
+        
+        // Choose the correct currency symbol
+        const currencySymbol =
+          conversion.buyerCurrency === "USD" ?
+          "$" :
+          conversion.buyerCurrency === "GBP" ?
+          "£" :
+          conversion.buyerCurrency === "EUR" ?
+          "€" :
+          conversion.buyerCurrency === "CAD" ?
+          "CA$" :
+          conversion.buyerCurrency === "AUD" ?
+          "A$" :
+          conversion.buyerCurrency === "ZAR" ?
+          "R" :
+          "₦";
+        
+        
+        const displayedPrice =
+          conversion.convertedPrice
+          .toLocaleString(
+            undefined,
+            {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            }
+          );
+        
+        
+        return `
+          <div class="content-card">
 
-  button = `
-    <button onclick="buyContent('${content._id}')">
-      Buy Now
-    </button>
-  `;
+            <h2>${content.title}</h2>
 
-}
+            <p>${content.description}</p>
 
-      return `
-        <div class="content-card">
+            <p>
+              Price:
+              ${currencySymbol}${displayedPrice}
+            </p>
 
-          <h2>${content.title}</h2>
+            ${button}
 
-          <p>${content.description}</p>
+          </div>
+        `;
+        
+        
+      } catch (error) {
+        
+        console.error(
+          "Price conversion error:",
+          error
+        );
+        
+        
+        // If conversion fails,
+        // show the original price instead.
+        const fallbackSymbol =
+          content.priceCurrency === "USD" ?
+          "$" :
+          content.priceCurrency === "GBP" ?
+          "£" :
+          content.priceCurrency === "EUR" ?
+          "€" :
+          content.priceCurrency === "CAD" ?
+          "CA$" :
+          content.priceCurrency === "AUD" ?
+          "A$" :
+          content.priceCurrency === "ZAR" ?
+          "R" :
+          "₦";
+        
+        
+        return `
+          <div class="content-card">
 
-          <p>
-  Price: ${
-    content.contentType === "free"
-      ? "Free"
-      : `${
-          content.priceCurrency === "USD"
-            ? "$"
-            : content.priceCurrency === "GBP"
-            ? "£"
-            : content.priceCurrency === "EUR"
-            ? "€"
-            : content.priceCurrency === "CAD"
-            ? "CA$"
-            : content.priceCurrency === "AUD"
-            ? "A$"
-            : content.priceCurrency === "ZAR"
-            ? "R"
-            : "₦"
-        }${content.price.toLocaleString()}`
-  }
-</p>
+            <h2>${content.title}</h2>
 
-          ${button}
+            <p>${content.description}</p>
 
-        </div>
-      `;
+            <p>
+              Price:
+              ${fallbackSymbol}${content.price.toLocaleString()}
+            </p>
 
-    }).join("");
+            ${button}
+
+          </div>
+        `;
+        
+      }
+      
+    })
+    
+  );
+
+
+// Put all finished cards onto the page
+contentList.innerHTML =
+  contentCards.join("");
 
   } catch (error) {
 
