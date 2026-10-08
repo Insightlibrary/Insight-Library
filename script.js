@@ -382,6 +382,14 @@ async function buyContent(contentId) {
   try {
     const token = localStorage.getItem("token");
 
+const buyerCurrency =
+  localStorage.getItem("buyerCurrency") || "NGN";
+  
+  console.log(
+  "BUYER CURRENCY:",
+  buyerCurrency
+);
+  
     if (!token) {
   localStorage.setItem("pendingContentId", contentId);
   window.location.href = "login.html";
@@ -400,8 +408,9 @@ localStorage.setItem("pendingContentId", contentId);
         },
 
         body: JSON.stringify({
-          contentId: contentId
-        })
+  contentId: contentId,
+  buyerCurrency: buyerCurrency
+})
       }
     );
 

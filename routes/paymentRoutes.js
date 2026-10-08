@@ -1,6 +1,8 @@
 const express = require("express");
 const axios = require("axios");
 const mongoose = require("mongoose");
+const getExchangeRate =
+  require("../config/exchangeRates");
 const {
   GetObjectCommand
 } = require("@aws-sdk/client-s3");
@@ -14,12 +16,51 @@ const Content = require("../models/Content");
 const Purchase = require("../models/Purchase");
 const auth = require("../middleware/auth");
 const router = express.Router();
+const supportedBuyerCurrencies = [
+  "NGN",
+  "USD",
+  "GBP",
+  "EUR",
+  "CAD",
+  "AUD",
+  "ZAR"
+];
+
+const paystackCurrencies = [
+  "NGN",
+  "USD"
+];
 
 router.post("/initialize", auth, async (req, res) => {
   try {
-    const { contentId } = req.body;
+    const {
+  contentId,
+  buyerCurrency
+} = req.body;
 
 const userId = req.user.id;
+if (
+  !buyerCurrency ||
+  !supportedBuyerCurrencies.includes(
+    buyerCurrency
+  )
+) {
+  return res.status(400).json({
+    message:
+      "This buyer currency is not supported"
+  });
+}
+
+if (
+  !paystackCurrencies.includes(
+    buyerCurrency
+  )
+) {
+  return res.status(400).json({
+    message:
+      "This currency is not currently available for Paystack checkout"
+  });
+}
 
 const User = mongoose.model("User");
 
@@ -45,16 +86,81 @@ if (!user) {
         message: "Content not found"
       });
     }
+    
+    if (content.contentType === "free") {
+  return res.status(400).json({
+    message: "Free content does not require payment"
+  });
+}
 
     // Convert naira to kobo for Paystack
-    const amountInKobo = content.price * 100;
+    const originalPrice =
+  Number(content.price);
+
+const originalCurrency =
+  content.priceCurrency || "NGN";
+  
+  let transactionAmount =
+  originalPrice;
+
+let exchangeRate = 1;
+
+if (
+  originalCurrency !== buyerCurrency
+) {
+
+  exchangeRate =
+    await getExchangeRate(
+      originalCurrency,
+      buyerCurrency
+    );
+
+  transactionAmount =
+    originalPrice *
+    exchangeRate;
+
+}
+
+if (
+  !Number.isFinite(transactionAmount) ||
+  transactionAmount <= 0
+) {
+
+  return res.status(400).json({
+    message:
+      "Invalid transaction amount"
+  });
+
+}
+const paystackAmount =
+  Math.round(
+    transactionAmount * 100
+  );
+  transactionAmount =
+  paystackAmount / 100;
+  
+  const paystackMinimums = {
+  NGN: 50,
+  USD: 2
+};
+
+if (
+  transactionAmount <
+  paystackMinimums[buyerCurrency]
+) {
+  return res.status(400).json({
+    message:
+      `The minimum Paystack payment in ${buyerCurrency} is ${paystackMinimums[buyerCurrency]}`
+  });
+}
 
     // Initialize Paystack payment
 const response = await axios.post(
   "https://api.paystack.co/transaction/initialize",
   {
     email: user.email,
-    amount: amountInKobo,
+    amount: paystackAmount,
+    currency: buyerCurrency,
     callback_url: "https://insightlibrary.github.io/Insight-Library/payment-success.html"
   },
   {
@@ -67,11 +173,42 @@ const response = await axios.post(
 
 // Save the purchase as pending
 const purchase = new Purchase({
-  userId: userId,
-  contentId: content._id,
-  amount: content.price,
-  paystackReference: response.data.data.reference,
-  status: "pending"
+
+  userId:
+    userId,
+
+  contentId:
+    content._id,
+
+  // Original/source price
+  amount:
+    originalPrice,
+
+  currency:
+    originalCurrency,
+
+  sourceAmount:
+    originalPrice,
+
+  sourceCurrency:
+    originalCurrency,
+
+  // Actual amount sent to Paystack
+  transactionAmount:
+    transactionAmount,
+
+  transactionCurrency:
+    buyerCurrency,
+
+  exchangeRate:
+    exchangeRate,
+
+  paystackReference:
+    response.data.data.reference,
+
+  status:
+    "pending"
+
 });
 
 await purchase.save();
@@ -119,6 +256,13 @@ router.get("/verify/:reference", auth, async (req, res) => {
     }
 
     const transaction = response.data.data;
+    
+    if (transaction.reference !== reference) {
+  return res.status(400).json({
+    message:
+      "Payment reference mismatch"
+  });
+}
 
 // Find the purchase in MongoDB
 const purchase = await Purchase.findOne({
@@ -141,11 +285,28 @@ if (!purchase) {
 
 
 // Check that the amount paid matches the purchase amount
-if (transaction.amount !== purchase.amount * 100) {
+if (
+  transaction.amount !==
+  Math.round(
+    purchase.transactionAmount * 100
+  )
+) {
   return res.status(400).json({
-    message: "Payment amount does not match"
+    message:
+      "Payment amount mismatch"
   });
 }
+
+if (
+  transaction.currency !==
+  purchase.transactionCurrency
+) {
+  return res.status(400).json({
+    message:
+      "Payment currency mismatch"
+  });
+}
+
 // Mark the purchase as successful
 purchase.status = "successful";
 purchase.paidAt = new Date();
@@ -158,6 +319,7 @@ await purchase.save();
       reference: transaction.reference,
       amount: transaction.amount,
       status: transaction.status
+      contentId: purchase.contentId,
     });
 
   } catch (error) {

@@ -43,8 +43,8 @@ async function verifyPayment() {
     message.textContent =
       "Payment verified successfully! You can now download your content.";
 
-    // Get the content that was being purchased
-    const contentId = localStorage.getItem("pendingContentId");
+// Get the verified content ID from the backend
+const contentId = data.contentId;
 
     if (!contentId) {
       message.textContent =
