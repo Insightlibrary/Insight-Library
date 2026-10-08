@@ -5,6 +5,7 @@ const express = require("express")
 const paymentRoutes = require("./routes/paymentRoutes");
 const contentRoutes = require("./routes/contentRoutes");
 const adminContentRoutes = require("./routes/adminContentRoutes");
+const currencyRoutes = require("./routes/currencyRoutes");
 const creatorRoutes = require("./routes/creatorRoutes");
 const adminCreatorRoutes = require("./routes/adminCreatorRoutes");
 const authMiddleware = require("./middleware/auth");
@@ -38,6 +39,7 @@ app.use(express.json())
 app.use("/api/payments", paymentRoutes);
 app.use("/api/contents", contentRoutes);
 app.use("/api/admin/content", adminContentRoutes);
+app.use("/api/currency", currencyRoutes);
 app.use("/api/creator", creatorRoutes);
 app.use("/api/admin/creator", adminCreatorRoutes);
 app.use(morgan("dev"))
