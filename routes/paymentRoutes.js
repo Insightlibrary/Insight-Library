@@ -318,8 +318,8 @@ await purchase.save();
       message: "Payment verified successfully",
       reference: transaction.reference,
       amount: transaction.amount,
-      status: transaction.status
-      contentId: purchase.contentId,
+      status: transaction.status,
+      contentId: purchase.contentId
     });
 
   } catch (error) {
