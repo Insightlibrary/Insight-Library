@@ -419,9 +419,7 @@ localStorage.setItem("pendingContentId", contentId);
     if (!response.ok) {
 
   if (
-    buyerCurrency === "USD" &&
-    data.message &&
-    data.message.includes("Paystack")
+    buyerCurrency === "USD" 
   ) {
     alert(
       "USD checkout is not currently available. Please switch your currency to NGN and try again."
