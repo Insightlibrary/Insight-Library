@@ -191,17 +191,21 @@ async function checkPurchase() {
 // DISPLAY CONTENT
 // ================================
 
-function displayContent(
+async function displayContent(
   alreadyPurchased
 ) {
-
+  
   let button;
-
-
+  
+  
+  // ================================
   // FREE CONTENT
-
-  if (currentContent.contentType === "free") {
-
+  // ================================
+  
+  if (
+    currentContent.contentType === "free"
+  ) {
+    
     button = `
 
       <button
@@ -211,13 +215,16 @@ function displayContent(
       </button>
 
     `;
-
+    
   }
-
-  // USER ALREADY PURCHASED PAID CONTENT
-
+  
+  
+  // ================================
+  // ALREADY PURCHASED
+  // ================================
+  
   else if (alreadyPurchased) {
-
+    
     button = `
 
       <button
@@ -227,13 +234,16 @@ function displayContent(
       </button>
 
     `;
-
+    
   }
-
-  // PAID CONTENT NOT PURCHASED
-
+  
+  
+  // ================================
+  // NOT PURCHASED
+  // ================================
+  
   else {
-
+    
     button = `
 
       <button
@@ -243,10 +253,110 @@ function displayContent(
       </button>
 
     `;
-
+    
   }
-
-
+  
+  
+  // ================================
+  // GET BUYER CURRENCY
+  // ================================
+  
+  const buyerCurrency =
+    localStorage.getItem(
+      "buyerCurrency"
+    ) || "NGN";
+  
+  
+  // ================================
+  // DEFAULT PRICE
+  // ================================
+  
+  let displayedPrice =
+    currentContent.price;
+  
+  let currencySymbol =
+    currentContent.priceCurrency === "USD" ?
+    "$" :
+    currentContent.priceCurrency === "GBP" ?
+    "£" :
+    currentContent.priceCurrency === "EUR" ?
+    "€" :
+    currentContent.priceCurrency === "CAD" ?
+    "CA$" :
+    currentContent.priceCurrency === "AUD" ?
+    "A$" :
+    currentContent.priceCurrency === "ZAR" ?
+    "R" :
+    "₦";
+  
+  
+  // ================================
+  // CONVERT PAID CONTENT PRICE
+  // ================================
+  
+  if (
+    currentContent.contentType === "paid"
+  ) {
+    
+    try {
+      
+      const conversionResponse =
+        await fetch(
+          `https://insight-library.onrender.com/api/currency/convert/${contentId}?currency=${buyerCurrency}`
+        );
+      
+      
+      if (
+        !conversionResponse.ok
+      ) {
+        
+        throw new Error(
+          "Price conversion failed"
+        );
+        
+      }
+      
+      
+      const conversion =
+        await conversionResponse.json();
+      
+      
+      displayedPrice =
+        conversion.convertedPrice;
+      
+      
+      currencySymbol =
+        conversion.buyerCurrency === "USD" ?
+        "$" :
+        conversion.buyerCurrency === "GBP" ?
+        "£" :
+        conversion.buyerCurrency === "EUR" ?
+        "€" :
+        conversion.buyerCurrency === "CAD" ?
+        "CA$" :
+        conversion.buyerCurrency === "AUD" ?
+        "A$" :
+        conversion.buyerCurrency === "ZAR" ?
+        "R" :
+        "₦";
+      
+      
+    } catch (error) {
+      
+      console.error(
+        "Content price conversion error:",
+        error
+      );
+      
+    }
+    
+  }
+  
+  
+  // ================================
+  // DISPLAY CONTENT
+  // ================================
+  
   contentPage.innerHTML = `
 
     <h1>
@@ -264,21 +374,15 @@ function displayContent(
       ${
         currentContent.contentType === "free"
           ? "Free"
-          : `${
-              currentContent.priceCurrency === "USD"
-                ? "$"
-                : currentContent.priceCurrency === "GBP"
-                ? "£"
-                : currentContent.priceCurrency === "EUR"
-                ? "€"
-                : currentContent.priceCurrency === "CAD"
-                ? "CA$"
-                : currentContent.priceCurrency === "AUD"
-                ? "A$"
-                : currentContent.priceCurrency === "ZAR"
-                ? "R"
-                : "₦"
-            }${currentContent.price.toLocaleString()}`
+          : `${currencySymbol}${Number(
+              displayedPrice
+            ).toLocaleString(
+              undefined,
+              {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }
+            )}`
       }
 
     </div>
@@ -298,9 +402,8 @@ function displayContent(
     ${button}
 
   `;
-
+  
 }
-
 // ================================
 // BUY CONTENT
 // ================================
@@ -340,6 +443,10 @@ async function buyContent(
 
 const buyerCurrency =
   localStorage.getItem("buyerCurrency") || "NGN";
+  console.log(
+  "CONTENT PAGE BUYER CURRENCY:",
+  buyerCurrency
+);
 
     const response = await fetch(
       "https://insight-library.onrender.com/api/payments/initialize",
@@ -374,16 +481,27 @@ const buyerCurrency =
 
 
     if (!response.ok) {
-
-      alert(
-        data.message ||
-        "Payment could not be initialized."
-      );
-
-
-      return;
-
-    }
+  
+  if (
+    buyerCurrency === "USD"
+  ) {
+    
+    alert(
+      "USD checkout is not currently available. Please switch your currency to NGN and try again."
+    );
+    
+  } else {
+    
+    alert(
+      data.message ||
+      "Payment could not be initialized."
+    );
+    
+  }
+  
+  return;
+  
+}
 
 
     // Send user to Paystack
