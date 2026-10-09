@@ -628,6 +628,32 @@ priceCurrency:
 
 );
 
+// ==================================================
+// GET ALL CONTENT FOR SUPER ADMIN
+// ==================================================
+
+router.get("/", auth, admin, async (req, res) => {
+  try {
+
+    const contents = await Content.find()
+      .populate("ownerId", "name email role")
+      .sort({ createdAt: -1 });
+
+    res.json(contents);
+
+  } catch (error) {
+
+    console.error(
+      "GET ADMIN CONTENT ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      message: "Failed to retrieve content"
+    });
+
+  }
+});
 
 // ==================================================
 // EXPORT ROUTER
